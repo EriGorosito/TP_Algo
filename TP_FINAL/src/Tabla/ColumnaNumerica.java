@@ -1,0 +1,24 @@
+package Tabla;
+
+public class ColumnaNumerica extends Columna<Number>{
+
+    public ColumnaNumerica(String encabezado) {
+        super(encabezado);
+        
+    }
+
+    @Override
+    public void agregarDato(Number celda) {
+        if (validarDato(celda)) {
+            columna.add(celda);
+        } else {
+            throw new IllegalArgumentException("El dato no es un número válido.");
+        }
+    }
+
+    @Override
+    public boolean validarDato(Number celda) {
+        // En este caso simplemente comprobamos que el dato no sea nulo
+        return celda != null;
+    }
+}
