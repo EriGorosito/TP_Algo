@@ -23,6 +23,24 @@ public class Tabla {
         cargarCSV(rutaArchivo); 
     }
 
+    //Para generar una estructura tavular a través de copia profunda de otra estructura del mismo tipo.
+    public Tabla(Tabla otraTabla) {
+        this.tabla = new ArrayList<>();
+        this.delimitador = otraTabla.delimitador;
+        this.tieneEncabezado = otraTabla.tieneEncabezado;
+    
+        for (Columna<?> columna : otraTabla.tabla) {
+            // Crea una nueva columna según el tipo de columna original
+            if (columna instanceof ColumnaNumerica) {
+                this.tabla.add(new ColumnaNumerica((ColumnaNumerica) columna));
+            } else if (columna instanceof ColumnaBooleana) {
+                this.tabla.add(new ColumnaBooleana((ColumnaBooleana) columna));
+            } else if (columna instanceof ColumnaCadena) {
+                this.tabla.add(new ColumnaCadena((ColumnaCadena) columna));
+            }
+        }
+    }
+
     
     public void cargarCSV(String rutaArchivo){
         List<String> encabezados = new ArrayList<>();
@@ -100,6 +118,11 @@ public class Tabla {
 
     public Columna<?> getColumna(int posicion) {
         return tabla.get(posicion);
+    }
+
+    //para permitir la adición de columnas individuales.
+    public void agregarColumna(Columna<?> columna) {
+        tabla.add(columna);
     }
 
     public void agregarFila(Object... valores) {

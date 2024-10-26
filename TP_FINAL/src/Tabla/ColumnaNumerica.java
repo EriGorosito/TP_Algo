@@ -7,6 +7,14 @@ public class ColumnaNumerica extends Columna<Number>{
         
     }
 
+    // Constructor de copia profunda
+    public ColumnaNumerica(ColumnaNumerica otraColumna) {
+        super(otraColumna.getEncabezado());
+        for (Number valor : otraColumna.getColumna()) {
+            this.columna.add(valor); // Copia cada valor
+        }
+    }
+    
     @Override
     public void agregarDato(Number celda) {
         if (validarDato(celda)) {

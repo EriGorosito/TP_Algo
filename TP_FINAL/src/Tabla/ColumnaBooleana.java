@@ -5,6 +5,14 @@ public class ColumnaBooleana extends Columna<Boolean>{
         super(encabezado);
     }
 
+       // Constructor de copia profunda
+       public ColumnaBooleana(ColumnaBooleana otraColumna) {
+        super(otraColumna.getEncabezado());
+        for (Boolean valor : otraColumna.getColumna()) {
+            this.columna.add(valor); // Copia cada valor
+        }
+    }
+    
     @Override
     public void agregarDato(Boolean celda) {
         if (validarDato(celda)) {
