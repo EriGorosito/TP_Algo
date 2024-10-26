@@ -23,7 +23,7 @@ public class Tabla {
         cargarCSV(rutaArchivo); 
     }
 
-    //Para generar una estructura tavular a través de copia profunda de otra estructura del mismo tipo.
+    //CONSTRUCTOR para generar una estructura tavular a través de copia profunda de otra estructura del mismo tipo.
     public Tabla(Tabla otraTabla) {
         this.tabla = new ArrayList<>();
         this.delimitador = otraTabla.delimitador;
@@ -38,6 +38,59 @@ public class Tabla {
             } else if (columna instanceof ColumnaCadena) {
                 this.tabla.add(new ColumnaCadena((ColumnaCadena) columna));
             }
+        }
+    }
+
+    // CONSTRUCTOR que toma una matriz bidimensional para crear la tabla.(estructura de dos dimensiones nativa de Java)
+    public <T> Tabla(T[][] datos) {
+        this.tabla = new ArrayList<>();
+        
+        // Inicializar columnas según el número de columnas en la matriz
+        int numColumnas = datos[0].length;
+        for (int col = 0; col < numColumnas; col++) {
+            // Detectar el tipo de dato en la primera fila
+            T primerValor = datos[0][col];
+            
+            if (primerValor instanceof Number) {
+                tabla.add(new ColumnaNumerica("Columna " + col));
+            } else if (primerValor instanceof Boolean) {
+                tabla.add(new ColumnaBooleana("Columna " + col));
+            } else {
+                tabla.add(new ColumnaCadena("Columna " + col));
+            }
+        }
+
+        // Agregar cada fila de la matriz a la tabla
+        for (T[] fila : datos) {
+            agregarFila(fila);
+        }
+    }
+    //CONSTRUCTOR para una secuencia lineal nativa de Java.
+    
+    public Tabla(List<Object[]> filas) {
+        this(); // Llama al constructor vacío para inicializar la tabla
+    
+        // Suponemos que todas las filas tienen el mismo número de columnas
+        if (filas.isEmpty()) {
+            throw new IllegalArgumentException("La lista de filas no puede estar vacía.");
+        }
+    
+        // Agregar las columnas a la tabla, basándose en la primera fila
+        for (int col = 0; col < filas.get(0).length; col++) {
+            // Determinar el tipo de la columna a partir de los valores de la primera fila
+            Object valor = filas.get(0)[col];
+            if (valor instanceof Number) {
+                tabla.add(new ColumnaNumerica("Columna " + (col + 1)));
+            } else if (valor instanceof Boolean) {
+                tabla.add(new ColumnaBooleana("Columna " + (col + 1)));
+            } else {
+                tabla.add(new ColumnaCadena("Columna " + (col + 1)));
+            }
+        }
+    
+        // Agregar cada fila a la tabla
+        for (Object[] fila : filas) {
+            agregarFila(fila);
         }
     }
 
@@ -146,11 +199,32 @@ public class Tabla {
     }
     
     public void imprimirTabla(){
-        for(Columna c: tabla){
-            System.out.println(c );
+        // for(Columna c: tabla){
+        //     System.out.println(c );
             
+        // }
+
+        //ESTE METODO ES PARA QUE IMPRIMA LOS DATOS DE LA COLUMNA UNA ABAJO DE LA OTRA
+        // Obtener el número de filas
+        int numFilas = getNumeroFilas(); 
+
+        // Iterar sobre cada fila
+        for (int fila = 0; fila < numFilas; fila++) {
+            StringBuilder sb = new StringBuilder(); // Usamos StringBuilder para construir la línea de salida
+
+            // Iterar sobre cada columna
+            for (Columna<?> columna : tabla) {
+                // Obtener el valor de la celda en la fila actual
+                Object valor = columna.getCelda(fila);
+                // Agregar el valor al StringBuilder, manejando valores nulos
+                sb.append(valor != null ? valor.toString() : "NA").append(" "); // Concatenar valor y un espacio
+            }
+
+            // Imprimir la línea construida, eliminando el espacio extra al final
+            System.out.println(sb.toString().trim());
         }
     }
-
 }
+
+
 
