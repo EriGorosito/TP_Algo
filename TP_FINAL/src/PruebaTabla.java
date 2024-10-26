@@ -2,10 +2,13 @@ import Tabla.ColumnaBooleana;
 import Tabla.ColumnaCadena;
 import Tabla.ColumnaNumerica;
 import Tabla.Tabla;
+import java.util.List;
+import java.util.ArrayList;
 
 public class PruebaTabla {
     
     public static void main(String[] args) {
+//CONSTRUCTOR PARA COPIA PROFUNDA
         // Crear la tabla original y agregar columnas
         // Tabla tablaOriginal = new Tabla();
         // ColumnaNumerica colNumerica = new ColumnaNumerica("Columna Numerica");
@@ -46,16 +49,27 @@ public class PruebaTabla {
 
         // System.out.println("\nTabla Copiada después de modificaciones en la original:");
         // tablaCopia.imprimirTabla();
+//PARA CONSTRUCTOR MATRICES
+        // Object[][] datos = {
+        //     {10, "Hola", true},
+        //     {20, "Mundo", false},
+        //     {30, "Java", true}
+        // };
 
-        Object[][] datos = {
-            {10, "Hola", true},
-            {20, "Mundo", false},
-            {30, "Java", true}
-        };
-
-        Tabla tablaDesdeMatriz = new Tabla(datos);
-        tablaDesdeMatriz.imprimirTabla();
+        // Tabla tablaDesdeMatriz = new Tabla(datos);
+        // tablaDesdeMatriz.imprimirTabla();
     
+//PARA CONTRUCTOR SECUENCIA LINEAL
+        List<Object[]> filas = new ArrayList<>();
+        filas.add(new Object[]{10, "Hola", true});
+        filas.add(new Object[]{20, "Mundo", false});
+        filas.add(new Object[]{30, "Java", true});
+
+        // Crear una tabla a partir de la lista de filas
+        Tabla tablaDesdeLista = new Tabla(filas);
+
+        // Imprimir la tabla
+        tablaDesdeLista.imprimirTabla();
     }
 }
 
