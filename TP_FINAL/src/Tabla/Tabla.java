@@ -4,12 +4,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Tabla {
     private List<Columna<?>> tabla;
     private String delimitador;
     private boolean tieneEncabezado;
+    private List<String> etiquetasFilas;
 
 
     public Tabla(){
@@ -19,6 +22,7 @@ public class Tabla {
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
         this.delimitador = delimitador;
         this.tieneEncabezado = tieneEncabezado;
+        this.etiquetasFilas = new ArrayList<>();
         this.tabla = new ArrayList<>();
         cargarCSV(rutaArchivo); 
     }
@@ -169,6 +173,14 @@ public class Tabla {
         return valor.equalsIgnoreCase("true") || valor.equalsIgnoreCase("false");
     }
 
+    private void inicializarEtiquetas() {
+        if (etiquetasFilas.isEmpty()) {
+            for (int i = 0; i < getNumeroFilas(); i++) {
+                etiquetasFilas.add(String.valueOf(i));
+            }
+        }
+    }
+
     public Columna<?> getColumna(int posicion) {
         return tabla.get(posicion);
     }
@@ -197,6 +209,83 @@ public class Tabla {
     public int getNumeroFilas() {
         return tabla.isEmpty() ? 0 : tabla.get(0).getColumna().size();
     }
+
+    public int getCantColumna(){
+        return tabla.size();
+    }
+
+    public List<String> getEncabezados(){
+        List<String> encabezados = new ArrayList<>();
+        for (Columna columna: tabla){
+            encabezados.add(columna.getEncabezado().trim());
+        }
+        return encabezados;
+    }
+
+    public Map<String, String> getTipoDatos(){
+        Map<String, String> tipodeDatos = new HashMap<>();
+        for (Columna columna: tabla){
+            String encabezado = columna.getEncabezado();
+            String tipoDato = columna.getTipoDato();
+            tipodeDatos.put(encabezado, tipoDato);
+        }
+        return tipodeDatos;
+    }
+
+    public void infoTabla(){
+        System.out.println("Información de la tabla:");
+        System.out.println("Cantidad de filas " + this.getNumeroFilas());
+        System.out.println("Cantidad de columnas: " + this.getCantColumna());
+        Map<String, String> tipoDeDatos = this.getTipoDatos();
+        for (Map.Entry<String, String> entry : tipoDeDatos.entrySet()) {
+            System.out.println("Columna: " + entry.getKey() + " - Tipo de Dato: " + entry.getValue());
+        }
+
+    }
+
+    public List<Object> indexFila(String etiquetaFila) {
+        inicializarEtiquetas();
+        int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
+        if (indiceFila == -1) {
+            throw new IllegalArgumentException("Etiqueta de fila no encontrada: " + etiquetaFila);
+        }
+    
+        List<Object> fila = new ArrayList<>();
+        for (Columna<?> columna : tabla) {
+            fila.add(columna.getCelda(indiceFila));
+        }
+        return fila;
+    }
+  
+
+    public List<Object> indexColumna(String etiquetaColumna) {
+        inicializarEtiquetas();  // Asegura que las etiquetas estén inicializadas
+        int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
+        if (indiceColumna == -1) {
+            System.out.println("Etiquetas de columnas disponibles: " + this.getEncabezados());
+            throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
+        }
+    
+        Columna<?> columna = tabla.get(indiceColumna);
+        return new ArrayList<>(columna.getColumna()); // Retorna una copia de la columna
+    }
+
+    public Object indexCelda(String etiquetaFila, String etiquetaColumna) {
+        inicializarEtiquetas();  // Asegura que las etiquetas estén inicializadas
+        int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
+        int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
+    
+        if (indiceFila == -1) {
+            throw new IllegalArgumentException("Etiqueta de fila no encontrada: " + etiquetaFila);
+        }
+        if (indiceColumna == -1) {
+            throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
+        }
+    
+        return tabla.get(indiceColumna).getCelda(indiceFila);
+    }
+    
+    
     
     public void imprimirTabla(){
         // for(Columna c: tabla){
