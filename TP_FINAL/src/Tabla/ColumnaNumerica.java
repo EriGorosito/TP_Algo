@@ -29,4 +29,9 @@ public class ColumnaNumerica extends Columna<Number>{
         // En este caso simplemente comprobamos que el dato no sea nulo
         return celda != null;
     }
+
+    @Override
+    public String getTipoDato() {
+        return "Numerica";
+    }
 }

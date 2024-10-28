@@ -26,4 +26,9 @@ public class ColumnaBooleana extends Columna<Boolean>{
     public boolean validarDato(Boolean celda) {
         return celda != null;
     }
+
+    @Override
+    public String getTipoDato() {
+        return "Booleana";
+    }
 }

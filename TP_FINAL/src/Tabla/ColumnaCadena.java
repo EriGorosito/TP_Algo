@@ -29,5 +29,10 @@ public class ColumnaCadena extends Columna<String>{
         return celda != null && !celda.trim().isEmpty(); 
     }
 
+    @Override
+    public String getTipoDato() {
+        return "String";
+    }
+
 
 }

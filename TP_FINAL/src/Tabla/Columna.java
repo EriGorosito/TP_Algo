@@ -48,4 +48,7 @@ public abstract class Columna<T> {
         }
         return salida;
     }
+
+
+    public abstract String getTipoDato();
 }
