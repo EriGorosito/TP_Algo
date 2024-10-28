@@ -14,7 +14,6 @@ public class App {
         tabla.infoTabla();
         tabla.imprimirTabla();
 
-        //tabla.prueba();
 
         List<Object> fila = tabla.indexFila("1");  // Accede a la fila con etiqueta "1"
         System.out.println("Fila 1: " + fila);

@@ -17,12 +17,13 @@ public class Tabla {
 
     public Tabla(){
         this.tabla = new ArrayList<>();
+        this.etiquetasFilas = new ArrayList<>();
     }
     
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
         this.delimitador = delimitador;
         this.tieneEncabezado = tieneEncabezado;
-        this.etiquetasFilas = new ArrayList<>();
+        this.etiquetasFilas = new ArrayList<>();this.etiquetasFilas = new ArrayList<>();
         this.tabla = new ArrayList<>();
         cargarCSV(rutaArchivo); 
     }
@@ -32,6 +33,7 @@ public class Tabla {
         this.tabla = new ArrayList<>();
         this.delimitador = otraTabla.delimitador;
         this.tieneEncabezado = otraTabla.tieneEncabezado;
+        this.etiquetasFilas = new ArrayList<>();
     
         for (Columna<?> columna : otraTabla.tabla) {
             // Crea una nueva columna según el tipo de columna original
@@ -48,6 +50,7 @@ public class Tabla {
     // CONSTRUCTOR que toma una matriz bidimensional para crear la tabla.(estructura de dos dimensiones nativa de Java)
     public <T> Tabla(T[][] datos) {
         this.tabla = new ArrayList<>();
+        this.etiquetasFilas = new ArrayList<>();
         
         // Inicializar columnas según el número de columnas en la matriz
         int numColumnas = datos[0].length;

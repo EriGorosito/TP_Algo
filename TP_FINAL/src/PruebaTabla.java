@@ -70,6 +70,18 @@ public class PruebaTabla {
 
         // Imprimir la tabla
         tablaDesdeLista.imprimirTabla();
+
+        //Acceso indexado
+        List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
+        System.out.println("Fila 1: " + fila);
+
+        // Acceso a una columna completa
+        List<Object> columna = tablaDesdeLista.indexColumna("Columna 1");  // Accede a la columna "Nombre"
+        System.out.println("Columna 'Columna 1': " + columna);
+
+        // Acceso a una celda específica
+        Object celda = tablaDesdeLista.indexCelda("1", "Columna 1");  // Accede a la celda en fila "1" y columna "Nombre"
+        System.out.println("Celda en (1, Columna 1): " + celda);
     }
 }
 
