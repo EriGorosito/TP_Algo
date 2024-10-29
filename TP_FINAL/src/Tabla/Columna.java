@@ -11,7 +11,6 @@ public abstract class Columna<T> {
         this.columna = new ArrayList<>();
     }
 
-
     public String getEncabezado() {
         return encabezado;
     }
@@ -51,4 +50,6 @@ public abstract class Columna<T> {
 
 
     public abstract String getTipoDato();
+
+    public abstract Columna<T> clone();
 }

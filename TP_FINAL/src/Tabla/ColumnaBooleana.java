@@ -1,5 +1,7 @@
 package Tabla;
 
+import java.util.ArrayList;
+
 public class ColumnaBooleana extends Columna<Boolean>{
     public ColumnaBooleana(String encabezado) {
         super(encabezado);
@@ -30,5 +32,12 @@ public class ColumnaBooleana extends Columna<Boolean>{
     @Override
     public String getTipoDato() {
         return "Booleana";
+    }
+
+    @Override
+    public Columna<Boolean> clone() {
+        ColumnaBooleana nuevaColumna = new ColumnaBooleana(this.getEncabezado());
+        nuevaColumna.columna = new ArrayList<>(this.columna); // Copia los datos
+        return nuevaColumna;
     }
 }

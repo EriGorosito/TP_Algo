@@ -1,5 +1,7 @@
 package Tabla;
 
+import java.util.ArrayList;
+
 public class ColumnaNumerica extends Columna<Number>{
 
     public ColumnaNumerica(String encabezado) {
@@ -33,5 +35,12 @@ public class ColumnaNumerica extends Columna<Number>{
     @Override
     public String getTipoDato() {
         return "Numerica";
+    }
+
+    @Override
+    public Columna<Number> clone() {
+        ColumnaNumerica nuevaColumna = new ColumnaNumerica(this.getEncabezado());
+        nuevaColumna.columna = new ArrayList<>(this.columna); // Copia los datos
+        return nuevaColumna;
     }
 }
