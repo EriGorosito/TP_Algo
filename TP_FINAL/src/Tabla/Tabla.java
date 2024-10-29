@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -362,6 +364,56 @@ public class Tabla {
             System.out.println(sb.toString().trim());
             
         }
+    }
+
+    public Tabla ordenarFilas(List<String> etiquetasColumnas, boolean ascendente) {
+        List<List<Object>> filas = new ArrayList<>();
+
+        // Recopilar los datos en una lista de filas
+        for (int i = 0; i < getNumeroFilas(); i++) {
+            List<Object> fila = new ArrayList<>();
+            for (Columna<?> columna : tabla) {
+                fila.add(columna.getCelda(i));
+            }
+            filas.add(fila);
+        }
+
+        // Crear un comparador para las filas
+        Collections.sort(filas, new Comparator<List<Object>>() {
+            @Override
+            public int compare(List<Object> fila1, List<Object> fila2) {
+                for (String etiquetaColumna : etiquetasColumnas) {
+                    int indiceColumna = getEncabezados().indexOf(etiquetaColumna);
+                    if (indiceColumna == -1) {
+                        throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
+                    }
+
+                    Comparable valor1 = (Comparable) fila1.get(indiceColumna);
+                    Comparable valor2 = (Comparable) fila2.get(indiceColumna);
+
+                    int comparacion = valor1.compareTo(valor2);
+                    if (comparacion != 0) {
+                        return ascendente ? comparacion : -comparacion;
+                    }
+                }
+                return 0; // Son iguales en todos los criterios
+            }
+        });
+
+        // Crear una nueva instancia de Tabla
+        Tabla tablaOrdenada = new Tabla();
+
+        // Agregar las columnas a la nueva tabla
+        for (Columna<?> columna : tabla) {
+            tablaOrdenada.agregarColumna(columna.clone()); // Asegúrate de que Columna tenga un método clone()
+        }
+
+        // Agregar las filas ordenadas a la nueva tabla
+        for (List<Object> fila : filas) {
+            tablaOrdenada.agregarFila(fila.toArray());
+        }
+
+        return tablaOrdenada;
     }
 }
 
