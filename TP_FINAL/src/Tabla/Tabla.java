@@ -1,6 +1,8 @@
 package Tabla;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -209,6 +211,42 @@ public class Tabla {
         }
     }
 
+
+     // Método para escribir datos a un archivo CSV
+     public void descargarACSV(String rutaArchivo) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
+            if (tieneEncabezado) {
+                // Escribir encabezado
+                for (int i = 0; i < tabla.size(); i++) {
+                    writer.write(tabla.get(i).getEncabezado());
+                    if (i < tabla.size() - 1) {
+                        writer.write(delimitador);
+                    }
+                }
+                writer.newLine();
+            }
+    
+            // Escribir datos fila por fila
+            for (int i = 0; i < getNumeroFilas(); i++) { // Recorre cada fila
+                for (int j = 0; j < tabla.size(); j++) { // Recorre cada columna
+                    Columna<?> columna = tabla.get(j);
+                    Object celda = columna.getCelda(i);
+    
+                    // Convertir a "NA" si la celda es null y luego escribir
+                    writer.write(celda != null ? celda.toString() : "NA");
+    
+                    // Agrega delimitador entre valores, pero no al final de la fila
+                    if (j < tabla.size() - 1) {
+                        writer.write(delimitador);
+                    }
+                }
+                writer.newLine(); // Nueva línea para la siguiente fila
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getNumeroFilas() {
         return tabla.isEmpty() ? 0 : tabla.get(0).getColumna().size();
     }
@@ -220,8 +258,16 @@ public class Tabla {
     public List<String> getEncabezados(){
         List<String> encabezados = new ArrayList<>();
         for (Columna columna: tabla){
-            encabezados.add(columna.getEncabezado().trim());
-        }
+            String encabezado = columna.getEncabezado(); // Obtener el encabezado
+            
+            // Verificar si el encabezado es nulo
+            if (encabezado != null) {
+                encabezados.add(encabezado.trim()); // Agregar encabezado sin espacios en blanco
+            } else {
+                encabezados.add("NA"); // Agregar un valor por defecto si es nulo
+            }
+                // encabezados.add(columna.getEncabezado().trim());
+            }
         return encabezados;
     }
 
@@ -314,6 +360,7 @@ public class Tabla {
 
             // Imprimir la línea construida, eliminando el espacio extra al final
             System.out.println(sb.toString().trim());
+            
         }
     }
 }

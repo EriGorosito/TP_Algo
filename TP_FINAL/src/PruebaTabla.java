@@ -82,6 +82,13 @@ public class PruebaTabla {
         // Acceso a una celda específica
         Object celda = tablaDesdeLista.indexCelda("1", "Columna 1");  // Accede a la celda en fila "1" y columna "Nombre"
         System.out.println("Celda en (1, Columna 1): " + celda);
+
+
+        // ESTA MALLLL
+        String rutaArchivo = "tabla_salida.csv";
+        tablaDesdeLista.descargarACSV(rutaArchivo);
+
+        System.out.println("Archivo CSV generado en: " + rutaArchivo);
     }
 }
 
