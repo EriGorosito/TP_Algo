@@ -60,35 +60,63 @@ public class PruebaTabla {
         // tablaDesdeMatriz.imprimirTabla();
     
 //PARA CONTRUCTOR SECUENCIA LINEAL
-        List<Object[]> filas = new ArrayList<>();
-        filas.add(new Object[]{10, "Hola", true});
-        filas.add(new Object[]{20, "Mundo", false});
-        filas.add(new Object[]{30, "Java", true});
+        // List<Object[]> filas = new ArrayList<>();
+        // filas.add(new Object[]{10, "Hola", true});
+        // filas.add(new Object[]{20, "Mundo", false});
+        // filas.add(new Object[]{30, "Java", true});
 
-        // Crear una tabla a partir de la lista de filas
-        Tabla tablaDesdeLista = new Tabla(filas);
+        // // Crear una tabla a partir de la lista de filas
+        // Tabla tablaDesdeLista = new Tabla(filas);
 
-        // Imprimir la tabla
-        tablaDesdeLista.imprimirTabla();
+        // // Imprimir la tabla
+        // tablaDesdeLista.imprimirTabla();
 
-        //Acceso indexado
-        List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
-        System.out.println("Fila 1: " + fila);
+        // //Acceso indexado
+        // List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
+        // System.out.println("Fila 1: " + fila);
 
-        // Acceso a una columna completa
-        List<Object> columna = tablaDesdeLista.indexColumna("Columna 1");  // Accede a la columna "Nombre"
-        System.out.println("Columna 'Columna 1': " + columna);
+        // // Acceso a una columna completa
+        // List<Object> columna = tablaDesdeLista.indexColumna("Columna 1");  // Accede a la columna "Nombre"
+        // System.out.println("Columna 'Columna 1': " + columna);
 
-        // Acceso a una celda específica
-        Object celda = tablaDesdeLista.indexCelda("1", "Columna 1");  // Accede a la celda en fila "1" y columna "Nombre"
-        System.out.println("Celda en (1, Columna 1): " + celda);
+        // // Acceso a una celda específica
+        // Object celda = tablaDesdeLista.indexCelda("1", "Columna 1");  // Accede a la celda en fila "1" y columna "Nombre"
+        // System.out.println("Celda en (1, Columna 1): " + celda);
 
 
-        // ESTA MALLLL
-        String rutaArchivo = "tabla_salida.csv";
-        tablaDesdeLista.descargarACSV(rutaArchivo);
+        // // ESTA MALLLL
+        // String rutaArchivo = "tabla_salida.csv";
+        // tablaDesdeLista.descargarACSV(rutaArchivo);
 
-        System.out.println("Archivo CSV generado en: " + rutaArchivo);
+        // System.out.println("Archivo CSV generado en: " + rutaArchivo);
+
+        
+// Crear tablas de prueba CONCATENAR
+        List<Object[]> filas1 = List.of(
+        new Object[]{10, "Hola", true},
+        new Object[]{20, "Mundo", false}
+        );
+        List<Object[]> filas2 = List.of(
+        new Object[]{30, "Java", true},
+        new Object[]{40, "Tabla", false}
+        );
+
+        Tabla tabla1 = new Tabla(filas1);
+        Tabla tabla2 = new Tabla(filas2);
+
+        // Imprimir tablas originales
+        System.out.println("Tabla 1:");
+        tabla1.imprimirTabla();
+        System.out.println("Tabla 2:");
+        tabla2.imprimirTabla();
+
+        // Concatenar tablas
+        Tabla tablaConcatenada = Tabla.concatenarTablas(tabla1, tabla2);
+
+        // Imprimir tabla concatenada
+        System.out.println("Tabla Concatenada:");
+        tablaConcatenada.imprimirTabla();
+
     }
 }
 
