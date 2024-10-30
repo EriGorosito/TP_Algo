@@ -202,6 +202,8 @@ public class Tabla {
     public void agregarFila(Object... valores) {
     
         if (valores.length != tabla.size()) {
+            System.out.println(this.tabla.size());
+            System.out.println(valores.length);
             throw new IllegalArgumentException("Número de valores no coincide con el número de columnas.");
         }
 
@@ -215,7 +217,13 @@ public class Tabla {
             }
         }
     }
-
+    private List<Object> obtenerFila(int indice) {
+        List<Object> fila = new ArrayList<>();
+        for (Columna<?> columna : tabla) {
+            fila.add(columna.getCelda(indice));
+        }
+        return fila;
+    }
 
      // Método para escribir datos a un archivo CSV
      public void descargarACSV(String rutaArchivo) {
@@ -339,36 +347,6 @@ public class Tabla {
         return tabla.get(indiceColumna).getCelda(indiceFila);
     }
     
-    
-    
-    public void imprimirTabla(){
-        // for(Columna c: tabla){
-        //     System.out.println(c );
-            
-        // }
-
-        //ESTE METODO ES PARA QUE IMPRIMA LOS DATOS DE LA COLUMNA UNA ABAJO DE LA OTRA
-        // Obtener el número de filas
-        int numFilas = getNumeroFilas(); 
-
-        // Iterar sobre cada fila
-        for (int fila = 0; fila < numFilas; fila++) {
-            StringBuilder sb = new StringBuilder(); // Usamos StringBuilder para construir la línea de salida
-
-            // Iterar sobre cada columna
-            for (Columna<?> columna : tabla) {
-                // Obtener el valor de la celda en la fila actual
-                Object valor = columna.getCelda(fila);
-                // Agregar el valor al StringBuilder, manejando valores nulos
-                sb.append(valor != null ? valor.toString() : "NA").append(" "); // Concatenar valor y un espacio
-            }
-
-            // Imprimir la línea construida, eliminando el espacio extra al final
-            System.out.println(sb.toString().trim());
-            
-        }
-    }
-
     public Tabla ordenarFilas(List<String> etiquetasColumnas, boolean ascendente) {
         List<List<Object>> filas = new ArrayList<>();
 
@@ -419,7 +397,6 @@ public class Tabla {
         return tablaOrdenada;
     }
 
-
     public static Tabla concatenarTablas(Tabla tabla1, Tabla tabla2) {
         // Validación: Comparar cantidad de columnas
         if (tabla1.tabla.size() != tabla2.tabla.size()) {
@@ -459,15 +436,72 @@ public class Tabla {
         return tablaConcatenada;
     }
 
-    // Método auxiliar para obtener una fila completa en forma de lista
-    public List<Object> obtenerFila(int indice) {
-        List<Object> fila = new ArrayList<>();
-        for (Columna<?> columna : tabla) {
-            fila.add(columna.getCelda(indice));
+    public Tabla head(int cantidad){
+        Tabla nuevaTabla = new Tabla();
+
+        if (cantidad > getNumeroFilas()){
+            throw new IndexOutOfBoundsException("Cantidad de filas fuera de rango");
         }
-        return fila;
+
+        for (Columna<?> columna: tabla){
+            nuevaTabla.agregarColumna(columna.copia());
+        }
+
+        for (int i = 0; i < cantidad; i++) {
+            List<Object> fila = new ArrayList<>();
+            for (Columna<?> columna : tabla) {
+                fila.add(columna.getCelda(i));
+            }
+            nuevaTabla.agregarFila(fila.toArray());
+        }
+    
+        return nuevaTabla;
     }
 
+    public Tabla tail(int cantidad){
+        Tabla nuevaTabla = new Tabla();
+        if(cantidad > tabla.size()){
+            throw new IndexOutOfBoundsException("Cantidad de columnas fuera de rango");
+        }
+
+        for (int i = 0; i < cantidad; i++){
+            nuevaTabla.agregarColumna(tabla.get(i).clone());
+        }
+
+        return nuevaTabla;
+    }
+
+    
+    
+    public void imprimirTabla(){
+        // for(Columna c: tabla){
+        //     System.out.println(c );
+            
+        // }
+
+        //ESTE METODO ES PARA QUE IMPRIMA LOS DATOS DE LA COLUMNA UNA ABAJO DE LA OTRA
+        // Obtener el número de filas
+        int numFilas = getNumeroFilas(); 
+
+        // Iterar sobre cada fila
+        for (int fila = 0; fila < numFilas; fila++) {
+            StringBuilder sb = new StringBuilder(); // Usamos StringBuilder para construir la línea de salida
+
+            // Iterar sobre cada columna
+            for (Columna<?> columna : tabla) {
+                // Obtener el valor de la celda en la fila actual
+                Object valor = columna.getCelda(fila);
+                // Agregar el valor al StringBuilder, manejando valores nulos
+                sb.append(valor != null ? valor.toString() : "NA").append(" "); // Concatenar valor y un espacio
+            }
+
+            // Imprimir la línea construida, eliminando el espacio extra al final
+            System.out.println(sb.toString().trim());
+            
+        }
+    }
+
+    
 }
 
 
