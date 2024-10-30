@@ -92,7 +92,7 @@ public class PruebaTabla {
         // System.out.println("Archivo CSV generado en: " + rutaArchivo);
 
 
-        Tabla nuevaTabla = tablaDesdeLista.head(1);
+        Tabla nuevaTabla = tablaDesdeLista.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna 3"));
         nuevaTabla.imprimirTabla();
         nuevaTabla.infoTabla();
         

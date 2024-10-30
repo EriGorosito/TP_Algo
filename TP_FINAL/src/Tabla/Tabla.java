@@ -471,7 +471,58 @@ public class Tabla {
         return nuevaTabla;
     }
 
+    public Tabla seleccionar(List<String> etiquetasFilas, List<String> encabezadosCol){
+        Tabla nuevaTabla = new Tabla();
+
+        List<Integer> indicesColumnas = new ArrayList<>();
+        if (encabezadosCol == null || encabezadosCol.isEmpty()) {
+            for (int i = 0; i < this.tabla.size(); i++) {
+                indicesColumnas.add(i);
+                System.out.println(tabla.get(i).clone());
+                nuevaTabla.agregarColumna(tabla.get(i).copia());
+            }
+        } else {
+
+            for (String encabezado : encabezadosCol) {
+                int indice = this.getEncabezados().indexOf(encabezado.trim());
+                if (indice != -1) {
+                    indicesColumnas.add(indice);
+                    nuevaTabla.agregarColumna(tabla.get(indice).copia()); // Agregar la columna seleccionada
+                } else {
+                    throw new IllegalArgumentException("Encabezado no encontrado: " + encabezado);
+                }
+            }
+        }
+
+
+       
+        if (etiquetasFilas == null || etiquetasFilas.isEmpty()) {
+            for (int i = 0; i < this.getNumeroFilas(); i++) {
+                List<Object> nuevaFila = new ArrayList<>();
+                for (int indiceColumna : indicesColumnas) {
+                    nuevaFila.add(this.tabla.get(indiceColumna).getCelda(i));
+                }
+                nuevaTabla.agregarFila(nuevaFila.toArray());
+            }
+        } else {
+            // Seleccionar solo las filas indicadas en etiquetasFilas
+            for (String etiquetaFila : etiquetasFilas) {
+		    	List<Object> nuevaFila = new ArrayList<>();
+		    	int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
+			    for (int indiceColumna: indicesColumnas){
+			    	nuevaFila.add(tabla.get(indiceColumna).getCelda(indiceFila));
+                    System.out.println(nuevaFila.size());
+                }
+                nuevaTabla.agregarFila(nuevaFila.toArray());
+
+            }
+        }
+
+
+        return nuevaTabla;
+    }
     
+
     
     public void imprimirTabla(){
         // for(Columna c: tabla){
