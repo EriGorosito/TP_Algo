@@ -43,5 +43,10 @@ public class ColumnaCadena extends Columna<String>{
         return nuevaColumna;
     }
 
+    @Override
+    public Columna<String> copia() {
+        return new ColumnaCadena(this.getEncabezado());
+    }
+
 
 }

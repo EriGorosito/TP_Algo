@@ -52,4 +52,6 @@ public abstract class Columna<T> {
     public abstract String getTipoDato();
 
     public abstract Columna<T> clone();
+
+    public abstract Columna<T> copia();
 }

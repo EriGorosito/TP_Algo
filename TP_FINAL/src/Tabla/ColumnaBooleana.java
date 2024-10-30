@@ -40,4 +40,9 @@ public class ColumnaBooleana extends Columna<Boolean>{
         nuevaColumna.columna = new ArrayList<>(this.columna); // Copia los datos
         return nuevaColumna;
     }
+
+    @Override
+    public Columna<Boolean> copia() {
+        return new ColumnaBooleana(this.getEncabezado());
+    }
 }

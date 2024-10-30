@@ -4,6 +4,7 @@ import Tabla.ColumnaNumerica;
 import Tabla.Tabla;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PruebaTabla {
     
@@ -60,16 +61,16 @@ public class PruebaTabla {
         // tablaDesdeMatriz.imprimirTabla();
     
 //PARA CONTRUCTOR SECUENCIA LINEAL
-        // List<Object[]> filas = new ArrayList<>();
-        // filas.add(new Object[]{10, "Hola", true});
-        // filas.add(new Object[]{20, "Mundo", false});
-        // filas.add(new Object[]{30, "Java", true});
+        List<Object[]> filas = new ArrayList<>();
+        filas.add(new Object[]{10, "Hola", true});
+        filas.add(new Object[]{20, "Mundo", false});
+        filas.add(new Object[]{30, "Java", true});
 
-        // // Crear una tabla a partir de la lista de filas
-        // Tabla tablaDesdeLista = new Tabla(filas);
+        // Crear una tabla a partir de la lista de filas
+        Tabla tablaDesdeLista = new Tabla(filas);
 
-        // // Imprimir la tabla
-        // tablaDesdeLista.imprimirTabla();
+        // Imprimir la tabla
+        tablaDesdeLista.imprimirTabla();
 
         // //Acceso indexado
         // List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
@@ -90,8 +91,13 @@ public class PruebaTabla {
 
         // System.out.println("Archivo CSV generado en: " + rutaArchivo);
 
+
+        Tabla nuevaTabla = tablaDesdeLista.head(1);
+        nuevaTabla.imprimirTabla();
+        nuevaTabla.infoTabla();
         
 // Crear tablas de prueba CONCATENAR
+/* 
         List<Object[]> filas1 = List.of(
         new Object[]{10, "Hola", true},
         new Object[]{20, "Mundo", false}
@@ -116,7 +122,7 @@ public class PruebaTabla {
         // Imprimir tabla concatenada
         System.out.println("Tabla Concatenada:");
         tablaConcatenada.imprimirTabla();
-
+*/
     }
 }
 

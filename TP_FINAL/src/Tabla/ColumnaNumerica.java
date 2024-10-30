@@ -43,4 +43,9 @@ public class ColumnaNumerica extends Columna<Number>{
         nuevaColumna.columna = new ArrayList<>(this.columna); // Copia los datos
         return nuevaColumna;
     }
+
+    @Override
+    public Columna<Number> copia() {
+        return new ColumnaNumerica(this.getEncabezado());
+    }
 }
