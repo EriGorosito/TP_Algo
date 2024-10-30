@@ -22,6 +22,8 @@ public class Tabla {
     public Tabla(){
         this.tabla = new ArrayList<>();
         this.etiquetasFilas = new ArrayList<>();
+        this.delimitador = ",";
+        this.tieneEncabezado = true;
     }
     
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
@@ -198,6 +200,7 @@ public class Tabla {
     }
 
     public void agregarFila(Object... valores) {
+    
         if (valores.length != tabla.size()) {
             throw new IllegalArgumentException("Número de valores no coincide con el número de columnas.");
         }
@@ -415,6 +418,56 @@ public class Tabla {
 
         return tablaOrdenada;
     }
+
+
+    public static Tabla concatenarTablas(Tabla tabla1, Tabla tabla2) {
+        // Validación: Comparar cantidad de columnas
+        if (tabla1.tabla.size() != tabla2.tabla.size()) {
+            throw new IllegalArgumentException("Las tablas no tienen la misma cantidad de columnas.");
+        }
+
+        // Validación: Verificar que las columnas coincidan en tipo, orden y etiquetas
+        for (int i = 0; i < tabla1.tabla.size(); i++) {
+            Columna<?> columna1 = tabla1.tabla.get(i);
+            Columna<?> columna2 = tabla2.tabla.get(i);
+
+            // Verificar tipo de datos, nombre y orden
+            if (!columna1.getClass().equals(columna2.getClass()) || 
+                !columna1.getEncabezado().equals(columna2.getEncabezado())) {
+                throw new IllegalArgumentException("Las columnas no coinciden en tipo de datos, orden o etiquetas.");
+            }
+        }
+
+        // Crear una nueva tabla para almacenar la concatenación de ambas
+        Tabla tablaConcatenada = new Tabla();
+
+        // Copiar columnas de tabla1 a la tabla concatenada (solo una vez, ya que ambas tablas tienen las mismas columnas)
+        for (Columna<?> columna : tabla1.tabla) {
+            tablaConcatenada.tabla.add(columna.clone()); // Copia profunda de la columna
+        }
+
+        // Agregar filas de tabla1
+        for (int i = 0; i < tabla1.getNumeroFilas(); i++) {
+            tablaConcatenada.agregarFila(tabla1.obtenerFila(i).toArray());
+        }
+
+        // Agregar filas de tabla2
+        for (int i = 0; i < tabla2.getNumeroFilas(); i++) {
+            tablaConcatenada.agregarFila(tabla2.obtenerFila(i).toArray());
+        }
+
+        return tablaConcatenada;
+    }
+
+    // Método auxiliar para obtener una fila completa en forma de lista
+    public List<Object> obtenerFila(int indice) {
+        List<Object> fila = new ArrayList<>();
+        for (Columna<?> columna : tabla) {
+            fila.add(columna.getCelda(indice));
+        }
+        return fila;
+    }
+
 }
 
 
