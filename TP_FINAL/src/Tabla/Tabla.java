@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Tabla {
     private List<Columna<?>> tabla;
@@ -550,6 +551,38 @@ public class Tabla {
             System.out.println(sb.toString().trim());
             
         }
+    }
+    public Tabla muestreo(int cantidad) {
+        if (cantidad <= 0 || cantidad > getNumeroFilas()) {
+            throw new IllegalArgumentException("La cantidad de muestras debe estar entre 1 y " + getNumeroFilas());
+        }
+
+        Tabla muestra = new Tabla(); // Nueva tabla para almacenar la muestra
+
+        // Clonamos las columnas de la tabla original
+        for (Columna<?> columna : tabla) {
+            muestra.agregarColumna(columna.copia());
+        }
+
+        // Generador de números aleatorios
+        Random random = new Random();
+        List<Integer> indicesSeleccionados = new ArrayList<>();
+
+        // Generar índices aleatorios sin repetición
+        while (indicesSeleccionados.size() < cantidad) {
+            int indice = random.nextInt(getNumeroFilas());
+            if (!indicesSeleccionados.contains(indice)) {
+                indicesSeleccionados.add(indice);
+            }
+        }
+
+        // Agregar las filas seleccionadas a la nueva tabla
+        for (int indice : indicesSeleccionados) {
+            List<Object> fila = obtenerFila(indice);
+            muestra.agregarFila(fila.toArray());
+        }
+
+        return muestra;
     }
 
     

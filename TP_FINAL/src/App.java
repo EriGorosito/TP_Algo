@@ -5,7 +5,7 @@ import Tabla.Tabla;
 
 public class App {
     public static void main(String[] args) {
-        String rutaArchivo = "/home/tareas/Desktop/TP_Algo/insurance.csv"; // Cambia esto por la ruta de tu archivo CSV
+        String rutaArchivo = "./insurance.csv"; // Cambia esto por la ruta de tu archivo CSV
         
         Tabla tabla = new Tabla(rutaArchivo, true, ",");
         //tabla.cargarCSV(rutaArchivo);
@@ -23,10 +23,13 @@ public class App {
         Object celda = tabla.indexCelda("1", "sex");  // Accede a la celda en fila "1" y columna "Nombre"
         System.out.println("Celda en (1, Nombre): " + celda);
 
-        //Ordenamiento
+        // Ordenamiento
         List<String> l = new ArrayList<>();
         l.add("age");
         tabla.ordenarFilas(l, true).imprimirTabla();;
+
+        // Muestreo
+        tabla.muestreo(5).imprimirTabla();
     }
 
     
