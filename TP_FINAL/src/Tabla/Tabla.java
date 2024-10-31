@@ -1,4 +1,5 @@
 package Tabla;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -19,29 +20,30 @@ public class Tabla {
     private boolean tieneEncabezado;
     private List<String> etiquetasFilas;
 
-
-    public Tabla(){
+    public Tabla() {
         this.tabla = new ArrayList<>();
         this.etiquetasFilas = new ArrayList<>();
         this.delimitador = ",";
         this.tieneEncabezado = true;
     }
-    
+
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
         this.delimitador = delimitador;
         this.tieneEncabezado = tieneEncabezado;
-        this.etiquetasFilas = new ArrayList<>();this.etiquetasFilas = new ArrayList<>();
+        this.etiquetasFilas = new ArrayList<>();
+        this.etiquetasFilas = new ArrayList<>();
         this.tabla = new ArrayList<>();
-        cargarCSV(rutaArchivo); 
+        cargarCSV(rutaArchivo);
     }
 
-    //CONSTRUCTOR para generar una estructura tavular a través de copia profunda de otra estructura del mismo tipo.
+    // CONSTRUCTOR para generar una estructura tavular a través de copia profunda de
+    // otra estructura del mismo tipo.
     public Tabla(Tabla otraTabla) {
         this.tabla = new ArrayList<>();
         this.delimitador = otraTabla.delimitador;
         this.tieneEncabezado = otraTabla.tieneEncabezado;
         this.etiquetasFilas = new ArrayList<>();
-    
+
         for (Columna<?> columna : otraTabla.tabla) {
             // Crea una nueva columna según el tipo de columna original
             if (columna instanceof ColumnaNumerica) {
@@ -54,17 +56,18 @@ public class Tabla {
         }
     }
 
-    // CONSTRUCTOR que toma una matriz bidimensional para crear la tabla.(estructura de dos dimensiones nativa de Java)
+    // CONSTRUCTOR que toma una matriz bidimensional para crear la tabla.(estructura
+    // de dos dimensiones nativa de Java)
     public <T> Tabla(T[][] datos) {
         this.tabla = new ArrayList<>();
         this.etiquetasFilas = new ArrayList<>();
-        
+
         // Inicializar columnas según el número de columnas en la matriz
         int numColumnas = datos[0].length;
         for (int col = 0; col < numColumnas; col++) {
             // Detectar el tipo de dato en la primera fila
             T primerValor = datos[0][col];
-            
+
             if (primerValor instanceof Number) {
                 tabla.add(new ColumnaNumerica("Columna " + col));
             } else if (primerValor instanceof Boolean) {
@@ -79,16 +82,16 @@ public class Tabla {
             agregarFila(fila);
         }
     }
-    //CONSTRUCTOR para una secuencia lineal nativa de Java.
-    
+    // CONSTRUCTOR para una secuencia lineal nativa de Java.
+
     public Tabla(List<Object[]> filas) {
         this(); // Llama al constructor vacío para inicializar la tabla
-    
+
         // Suponemos que todas las filas tienen el mismo número de columnas
         if (filas.isEmpty()) {
             throw new IllegalArgumentException("La lista de filas no puede estar vacía.");
         }
-    
+
         // Agregar las columnas a la tabla, basándose en la primera fila
         for (int col = 0; col < filas.get(0).length; col++) {
             // Determinar el tipo de la columna a partir de los valores de la primera fila
@@ -101,15 +104,14 @@ public class Tabla {
                 tabla.add(new ColumnaCadena("Columna " + (col + 1)));
             }
         }
-    
+
         // Agregar cada fila a la tabla
         for (Object[] fila : filas) {
             agregarFila(fila);
         }
     }
 
-    
-    public void cargarCSV(String rutaArchivo){
+    public void cargarCSV(String rutaArchivo) {
         List<String> encabezados = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
@@ -118,18 +120,18 @@ public class Tabla {
             boolean columnasdefinidas = false;
 
             while ((linea = reader.readLine()) != null) {
-                String[] valores= linea.split(delimitador);
+                String[] valores = linea.split(delimitador);
 
                 if (primeraFila && tieneEncabezado) {
                     // Si hay encabezado, lo leemos
                     encabezados.addAll(Arrays.asList(valores));
                     primeraFila = false;
                     continue;
-                } 
-                if (!columnasdefinidas){
+                }
+                if (!columnasdefinidas) {
                     for (int i = 0; i < valores.length; i++) {
                         String valor = valores[i].trim();
-                       
+
                         if (esNumerico(valor)) {
                             tabla.add(new ColumnaNumerica(encabezados.get(i)));
                         } else if (esBooleano(valor)) {
@@ -137,18 +139,18 @@ public class Tabla {
                         } else {
                             tabla.add(new ColumnaCadena(encabezados.get(i)));
                         }
-                    } 
-                    columnasdefinidas = true;   
-                } 
+                    }
+                    columnasdefinidas = true;
+                }
                 Object[] fila = new Object[valores.length];
 
                 for (int i = 0; i < valores.length; i++) {
                     String valor = valores[i].trim();
                     // Validamos y convertimos el valor según el tipo de la columna
                     Columna<?> columna = tabla.get(i);
-                    //System.out.println(columna);
+                    // System.out.println(columna);
                     if (valor.equals("NA") || valor.isEmpty()) {
-                        fila[i] = null; // Valor faltante 
+                        fila[i] = null; // Valor faltante
                     } else if (columna instanceof ColumnaNumerica) {
                         fila[i] = Double.parseDouble(valor); // Convertir a número
                     } else if (columna instanceof ColumnaBooleana) {
@@ -156,16 +158,15 @@ public class Tabla {
                     } else if (columna instanceof ColumnaCadena) {
                         fila[i] = valor; // Es un string
                     }
-                        
-                    
+
                 }
-                
+
                 // Agregamos la fila a la tabla con valores validados
                 this.agregarFila(fila);
                 primeraFila = false;
             }
 
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -178,7 +179,7 @@ public class Tabla {
             return false;
         }
     }
-    
+
     private boolean esBooleano(String valor) {
         return valor.equalsIgnoreCase("true") || valor.equalsIgnoreCase("false");
     }
@@ -195,13 +196,13 @@ public class Tabla {
         return tabla.get(posicion);
     }
 
-    //para permitir la adición de columnas individuales.
+    // para permitir la adición de columnas individuales.
     public void agregarColumna(Columna<?> columna) {
         tabla.add(columna);
     }
 
     public void agregarFila(Object... valores) {
-    
+
         if (valores.length != tabla.size()) {
             System.out.println(this.tabla.size());
             System.out.println(valores.length);
@@ -210,7 +211,7 @@ public class Tabla {
 
         for (int i = 0; i < valores.length; i++) {
             Columna columna = tabla.get(i);
-    
+
             if (valores[i] == null) {
                 columna.agregarNA(); // Si el valor es nulo, agregamos "NA"
             } else {
@@ -218,6 +219,7 @@ public class Tabla {
             }
         }
     }
+
     private List<Object> obtenerFila(int indice) {
         List<Object> fila = new ArrayList<>();
         for (Columna<?> columna : tabla) {
@@ -226,8 +228,8 @@ public class Tabla {
         return fila;
     }
 
-     // Método para escribir datos a un archivo CSV
-     public void descargarACSV(String rutaArchivo) {
+    // Método para escribir datos a un archivo CSV
+    public void descargarACSV(String rutaArchivo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
             if (tieneEncabezado) {
                 // Escribir encabezado
@@ -239,16 +241,16 @@ public class Tabla {
                 }
                 writer.newLine();
             }
-    
+
             // Escribir datos fila por fila
             for (int i = 0; i < getNumeroFilas(); i++) { // Recorre cada fila
                 for (int j = 0; j < tabla.size(); j++) { // Recorre cada columna
                     Columna<?> columna = tabla.get(j);
                     Object celda = columna.getCelda(i);
-    
+
                     // Convertir a "NA" si la celda es null y luego escribir
                     writer.write(celda != null ? celda.toString() : "NA");
-    
+
                     // Agrega delimitador entre valores, pero no al final de la fila
                     if (j < tabla.size() - 1) {
                         writer.write(delimitador);
@@ -265,29 +267,29 @@ public class Tabla {
         return tabla.isEmpty() ? 0 : tabla.get(0).getColumna().size();
     }
 
-    public int getCantColumna(){
+    public int getCantColumna() {
         return tabla.size();
     }
 
-    public List<String> getEncabezados(){
+    public List<String> getEncabezados() {
         List<String> encabezados = new ArrayList<>();
-        for (Columna columna: tabla){
+        for (Columna columna : tabla) {
             String encabezado = columna.getEncabezado(); // Obtener el encabezado
-            
+
             // Verificar si el encabezado es nulo
             if (encabezado != null) {
                 encabezados.add(encabezado.trim()); // Agregar encabezado sin espacios en blanco
             } else {
                 encabezados.add("NA"); // Agregar un valor por defecto si es nulo
             }
-                // encabezados.add(columna.getEncabezado().trim());
-            }
+            // encabezados.add(columna.getEncabezado().trim());
+        }
         return encabezados;
     }
 
-    public Map<String, String> getTipoDatos(){
+    public Map<String, String> getTipoDatos() {
         Map<String, String> tipodeDatos = new HashMap<>();
-        for (Columna columna: tabla){
+        for (Columna columna : tabla) {
             String encabezado = columna.getEncabezado();
             String tipoDato = columna.getTipoDato();
             tipodeDatos.put(encabezado, tipoDato);
@@ -295,7 +297,7 @@ public class Tabla {
         return tipodeDatos;
     }
 
-    public void infoTabla(){
+    public void infoTabla() {
         System.out.println("Información de la tabla:");
         System.out.println("Cantidad de filas " + this.getNumeroFilas());
         System.out.println("Cantidad de columnas: " + this.getCantColumna());
@@ -312,42 +314,41 @@ public class Tabla {
         if (indiceFila == -1) {
             throw new IllegalArgumentException("Etiqueta de fila no encontrada: " + etiquetaFila);
         }
-    
+
         List<Object> fila = new ArrayList<>();
         for (Columna<?> columna : tabla) {
             fila.add(columna.getCelda(indiceFila));
         }
         return fila;
     }
-  
 
     public List<Object> indexColumna(String etiquetaColumna) {
-        inicializarEtiquetas();  // Asegura que las etiquetas estén inicializadas
+        inicializarEtiquetas(); // Asegura que las etiquetas estén inicializadas
         int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
         if (indiceColumna == -1) {
             System.out.println("Etiquetas de columnas disponibles: " + this.getEncabezados());
             throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
         }
-    
+
         Columna<?> columna = tabla.get(indiceColumna);
         return new ArrayList<>(columna.getColumna()); // Retorna una copia de la columna
     }
 
     public Object indexCelda(String etiquetaFila, String etiquetaColumna) {
-        inicializarEtiquetas();  // Asegura que las etiquetas estén inicializadas
+        inicializarEtiquetas(); // Asegura que las etiquetas estén inicializadas
         int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
         int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
-    
+
         if (indiceFila == -1) {
             throw new IllegalArgumentException("Etiqueta de fila no encontrada: " + etiquetaFila);
         }
         if (indiceColumna == -1) {
             throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
         }
-    
+
         return tabla.get(indiceColumna).getCelda(indiceFila);
     }
-    
+
     public Tabla ordenarFilas(List<String> etiquetasColumnas, boolean ascendente) {
         List<List<Object>> filas = new ArrayList<>();
 
@@ -410,8 +411,8 @@ public class Tabla {
             Columna<?> columna2 = tabla2.tabla.get(i);
 
             // Verificar tipo de datos, nombre y orden
-            if (!columna1.getClass().equals(columna2.getClass()) || 
-                !columna1.getEncabezado().equals(columna2.getEncabezado())) {
+            if (!columna1.getClass().equals(columna2.getClass()) ||
+                    !columna1.getEncabezado().equals(columna2.getEncabezado())) {
                 throw new IllegalArgumentException("Las columnas no coinciden en tipo de datos, orden o etiquetas.");
             }
         }
@@ -419,7 +420,8 @@ public class Tabla {
         // Crear una nueva tabla para almacenar la concatenación de ambas
         Tabla tablaConcatenada = new Tabla();
 
-        // Copiar columnas de tabla1 a la tabla concatenada (solo una vez, ya que ambas tablas tienen las mismas columnas)
+        // Copiar columnas de tabla1 a la tabla concatenada (solo una vez, ya que ambas
+        // tablas tienen las mismas columnas)
         for (Columna<?> columna : tabla1.tabla) {
             tablaConcatenada.tabla.add(columna.clone()); // Copia profunda de la columna
         }
@@ -437,14 +439,14 @@ public class Tabla {
         return tablaConcatenada;
     }
 
-    public Tabla head(int cantidad){
+    public Tabla head(int cantidad) {
         Tabla nuevaTabla = new Tabla();
 
-        if (cantidad > getNumeroFilas()){
+        if (cantidad > getNumeroFilas()) {
             throw new IndexOutOfBoundsException("Cantidad de filas fuera de rango");
         }
 
-        for (Columna<?> columna: tabla){
+        for (Columna<?> columna : tabla) {
             nuevaTabla.agregarColumna(columna.copia());
         }
 
@@ -455,24 +457,24 @@ public class Tabla {
             }
             nuevaTabla.agregarFila(fila.toArray());
         }
-    
+
         return nuevaTabla;
     }
 
-    public Tabla tail(int cantidad){
+    public Tabla tail(int cantidad) {
         Tabla nuevaTabla = new Tabla();
-        if(cantidad > tabla.size()){
+        if (cantidad > tabla.size()) {
             throw new IndexOutOfBoundsException("Cantidad de columnas fuera de rango");
         }
 
-        for (int i = 0; i < cantidad; i++){
+        for (int i = 0; i < cantidad; i++) {
             nuevaTabla.agregarColumna(tabla.get(i).clone());
         }
 
         return nuevaTabla;
     }
 
-    public Tabla seleccionar(List<String> etiquetasFilas, List<String> encabezadosCol){
+    public Tabla seleccionar(List<String> etiquetasFilas, List<String> encabezadosCol) {
         Tabla nuevaTabla = new Tabla();
 
         List<Integer> indicesColumnas = new ArrayList<>();
@@ -495,8 +497,6 @@ public class Tabla {
             }
         }
 
-
-       
         if (etiquetasFilas == null || etiquetasFilas.isEmpty()) {
             for (int i = 0; i < this.getNumeroFilas(); i++) {
                 List<Object> nuevaFila = new ArrayList<>();
@@ -508,10 +508,10 @@ public class Tabla {
         } else {
             // Seleccionar solo las filas indicadas en etiquetasFilas
             for (String etiquetaFila : etiquetasFilas) {
-		    	List<Object> nuevaFila = new ArrayList<>();
-		    	int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
-			    for (int indiceColumna: indicesColumnas){
-			    	nuevaFila.add(tabla.get(indiceColumna).getCelda(indiceFila));
+                List<Object> nuevaFila = new ArrayList<>();
+                int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
+                for (int indiceColumna : indicesColumnas) {
+                    nuevaFila.add(tabla.get(indiceColumna).getCelda(indiceFila));
                     System.out.println(nuevaFila.size());
                 }
                 nuevaTabla.agregarFila(nuevaFila.toArray());
@@ -519,21 +519,73 @@ public class Tabla {
             }
         }
 
-
         return nuevaTabla;
     }
-    
 
-    
-    public void imprimirTabla(){
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        // Agregar los encabezados de las columnas
+        sb.append(String.format("%-5s", "")); // Espacio vacío para el índice
+        for (Columna<?> columna : tabla) {
+            sb.append(String.format("%-15s", columna.getEncabezado()));
+        }
+        sb.append("\n");
+
+        // Obtener el número máximo de filas en cualquier columna
+        int maxFilas = tabla.stream().mapToInt(Columna::largo).max().orElse(0);
+
+        // Mostrar solo las primeras 5 y las últimas 5 filas si hay más de 10 filas
+        if (maxFilas > 10) {
+            for (int i = 0; i < 5; i++) {
+                sb.append(String.format("%-5d", i)); // Imprimir el índice de fila
+                for (Columna<?> columna : tabla) {
+                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
+                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
+                }
+                sb.append("\n");
+            }
+
+            // Imprimir "..." debajo de los encabezados
+            sb.append(String.format("%-5s", " ")); // Espacio vacío para el índice
+            for (Columna<?> columna : tabla) {
+                sb.append(String.format("%-15s", "...")); // Puntos debajo de cada columna
+            }
+            sb.append("\n");
+
+            for (int i = maxFilas - 5; i < maxFilas; i++) {
+                sb.append(String.format("%-5d", i)); // Imprimir el índice de fila
+                for (Columna<?> columna : tabla) {
+                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
+                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
+                }
+                sb.append("\n");
+            }
+        } else {
+            // Agregar todas las filas si hay 10 o menos
+            for (int i = 0; i < maxFilas; i++) {
+                sb.append(String.format("%-5d", i)); // Imprimir el índice de fila
+                for (Columna<?> columna : tabla) {
+                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
+                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
+                }
+                sb.append("\n");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public void imprimirTabla() {
         // for(Columna c: tabla){
-        //     System.out.println(c );
-            
+        // System.out.println(c );
+
         // }
 
-        //ESTE METODO ES PARA QUE IMPRIMA LOS DATOS DE LA COLUMNA UNA ABAJO DE LA OTRA
+        // ESTE METODO ES PARA QUE IMPRIMA LOS DATOS DE LA COLUMNA UNA ABAJO DE LA OTRA
         // Obtener el número de filas
-        int numFilas = getNumeroFilas(); 
+        int numFilas = getNumeroFilas();
 
         // Iterar sobre cada fila
         for (int fila = 0; fila < numFilas; fila++) {
@@ -549,9 +601,10 @@ public class Tabla {
 
             // Imprimir la línea construida, eliminando el espacio extra al final
             System.out.println(sb.toString().trim());
-            
+
         }
     }
+
     public Tabla muestreo(int cantidad) {
         if (cantidad <= 0 || cantidad > getNumeroFilas()) {
             throw new IllegalArgumentException("La cantidad de muestras debe estar entre 1 y " + getNumeroFilas());
@@ -585,8 +638,4 @@ public class Tabla {
         return muestra;
     }
 
-    
 }
-
-
-
