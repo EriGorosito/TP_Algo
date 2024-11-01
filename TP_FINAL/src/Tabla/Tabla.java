@@ -10,30 +10,30 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 public class Tabla {
     private List<Columna<?>> tabla;
-    private String delimitador;
-    private boolean tieneEncabezado;
-    private List<String> etiquetasFilas;
+    private String delimitador = ",";
+    private boolean tieneEncabezado = true;
+    private LinkedHashMap<String, Integer> etiquetasFilas;
 
     public Tabla() {
         this.tabla = new ArrayList<>();
-        this.etiquetasFilas = new ArrayList<>();
-        this.delimitador = ",";
-        this.tieneEncabezado = true;
+        this.etiquetasFilas = new LinkedHashMap<>();
+        
     }
 
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
         this.delimitador = delimitador;
         this.tieneEncabezado = tieneEncabezado;
-        this.etiquetasFilas = new ArrayList<>();
-        this.etiquetasFilas = new ArrayList<>();
+        this.etiquetasFilas = new LinkedHashMap<>();
         this.tabla = new ArrayList<>();
-        cargarCSV(rutaArchivo);
+        ArchivoCSV archivo = new ArchivoCSV(); 
+        archivo.cargarCSV(this, rutaArchivo, delimitador, tieneEncabezado);
     }
 
     // CONSTRUCTOR para generar una estructura tavular a través de copia profunda de
@@ -42,7 +42,7 @@ public class Tabla {
         this.tabla = new ArrayList<>();
         this.delimitador = otraTabla.delimitador;
         this.tieneEncabezado = otraTabla.tieneEncabezado;
-        this.etiquetasFilas = new ArrayList<>();
+        this.etiquetasFilas = new LinkedHashMap<>();
 
         for (Columna<?> columna : otraTabla.tabla) {
             // Crea una nueva columna según el tipo de columna original
@@ -60,7 +60,7 @@ public class Tabla {
     // de dos dimensiones nativa de Java)
     public <T> Tabla(T[][] datos) {
         this.tabla = new ArrayList<>();
-        this.etiquetasFilas = new ArrayList<>();
+        this.etiquetasFilas = new LinkedHashMap<>();
 
         // Inicializar columnas según el número de columnas en la matriz
         int numColumnas = datos[0].length;
@@ -69,11 +69,11 @@ public class Tabla {
             T primerValor = datos[0][col];
 
             if (primerValor instanceof Number) {
-                tabla.add(new ColumnaNumerica("Columna " + col));
+                tabla.add(new ColumnaNumerica("Columna" + col));
             } else if (primerValor instanceof Boolean) {
-                tabla.add(new ColumnaBooleana("Columna " + col));
+                tabla.add(new ColumnaBooleana("Columna" + col));
             } else {
-                tabla.add(new ColumnaCadena("Columna " + col));
+                tabla.add(new ColumnaCadena("Columna" + col));
             }
         }
 
@@ -111,86 +111,90 @@ public class Tabla {
         }
     }
 
-    public void cargarCSV(String rutaArchivo) {
-        List<String> encabezados = new ArrayList<>();
+    // public void cargarCSV(String rutaArchivo) {
+    //     List<String> encabezados = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
-            String linea;
-            boolean primeraFila = true;
-            boolean columnasdefinidas = false;
+    //     try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
+    //         String linea;
+    //         boolean primeraFila = true;
+    //         boolean columnasdefinidas = false;
 
-            while ((linea = reader.readLine()) != null) {
-                String[] valores = linea.split(delimitador);
+    //         while ((linea = reader.readLine()) != null) {
+    //             String[] valores = linea.split(delimitador);
 
-                if (primeraFila && tieneEncabezado) {
-                    // Si hay encabezado, lo leemos
-                    encabezados.addAll(Arrays.asList(valores));
-                    primeraFila = false;
-                    continue;
-                }
-                if (!columnasdefinidas) {
-                    for (int i = 0; i < valores.length; i++) {
-                        String valor = valores[i].trim();
+    //             if (primeraFila && tieneEncabezado) {
+    //                 // Si hay encabezado, lo leemos
+    //                 encabezados.addAll(Arrays.asList(valores));
+    //                 primeraFila = false;
+    //                 continue;
+    //             }
+    //             if (!columnasdefinidas) {
+    //                 for (int i = 0; i < valores.length; i++) {
+    //                     String valor = valores[i].trim();
 
-                        if (esNumerico(valor)) {
-                            tabla.add(new ColumnaNumerica(encabezados.get(i)));
-                        } else if (esBooleano(valor)) {
-                            tabla.add(new ColumnaBooleana(encabezados.get(i)));
-                        } else {
-                            tabla.add(new ColumnaCadena(encabezados.get(i)));
-                        }
-                    }
-                    columnasdefinidas = true;
-                }
-                Object[] fila = new Object[valores.length];
+    //                     if (esNumerico(valor)) {
+    //                         tabla.add(new ColumnaNumerica(encabezados.get(i)));
+    //                     } else if (esBooleano(valor)) {
+    //                         tabla.add(new ColumnaBooleana(encabezados.get(i)));
+    //                     } else {
+    //                         tabla.add(new ColumnaCadena(encabezados.get(i)));
+    //                     }
+    //                 }
+    //                 columnasdefinidas = true;
+    //             }
+    //             Object[] fila = new Object[valores.length];
 
-                for (int i = 0; i < valores.length; i++) {
-                    String valor = valores[i].trim();
-                    // Validamos y convertimos el valor según el tipo de la columna
-                    Columna<?> columna = tabla.get(i);
-                    // System.out.println(columna);
-                    if (valor.equals("NA") || valor.isEmpty()) {
-                        fila[i] = null; // Valor faltante
-                    } else if (columna instanceof ColumnaNumerica) {
-                        fila[i] = Double.parseDouble(valor); // Convertir a número
-                    } else if (columna instanceof ColumnaBooleana) {
-                        fila[i] = Boolean.parseBoolean(valor); // Convertir a booleano
-                    } else if (columna instanceof ColumnaCadena) {
-                        fila[i] = valor; // Es un string
-                    }
+    //             for (int i = 0; i < valores.length; i++) {
+    //                 String valor = valores[i].trim();
+    //                 // Validamos y convertimos el valor según el tipo de la columna
+    //                 Columna<?> columna = tabla.get(i);
+    //                 // System.out.println(columna);
+    //                 if (valor.equals("NA") || valor.isEmpty()) {
+    //                     fila[i] = null; // Valor faltante
+    //                 } else if (columna instanceof ColumnaNumerica) {
+    //                     fila[i] = Double.parseDouble(valor); // Convertir a número
+    //                 } else if (columna instanceof ColumnaBooleana) {
+    //                     fila[i] = Boolean.parseBoolean(valor); // Convertir a booleano
+    //                 } else if (columna instanceof ColumnaCadena) {
+    //                     fila[i] = valor; // Es un string
+    //                 }
 
-                }
+    //             }
 
-                // Agregamos la fila a la tabla con valores validados
-                this.agregarFila(fila);
-                primeraFila = false;
-            }
+    //             // Agregamos la fila a la tabla con valores validados
+    //             this.agregarFila(fila);
+    //             primeraFila = false;
+    //         }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    // private boolean esNumerico(String valor) {
+    //     try {
+    //         Double.parseDouble(valor);
+    //         return true;
+    //     } catch (NumberFormatException e) {
+    //         return false;
+    //     }
+    // }
+
+    // private boolean esBooleano(String valor) {
+    //     return valor.equalsIgnoreCase("true") || valor.equalsIgnoreCase("false");
+    // }
+
+    
+
+    private void inicializarEtiquetas(){
+        for (int i = 0; i < getNumeroFilas(); i++){
+            String clave = String.valueOf(i);
+            this.etiquetasFilas.put(clave, i);
         }
     }
 
-    private boolean esNumerico(String valor) {
-        try {
-            Double.parseDouble(valor);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
 
-    private boolean esBooleano(String valor) {
-        return valor.equalsIgnoreCase("true") || valor.equalsIgnoreCase("false");
-    }
 
-    private void inicializarEtiquetas() {
-        if (etiquetasFilas.isEmpty()) {
-            for (int i = 0; i < getNumeroFilas(); i++) {
-                etiquetasFilas.add(String.valueOf(i));
-            }
-        }
-    }
 
     public Columna<?> getColumna(int posicion) {
         return tabla.get(posicion);
@@ -229,38 +233,42 @@ public class Tabla {
     }
 
     // Método para escribir datos a un archivo CSV
-    public void descargarACSV(String rutaArchivo) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
-            if (tieneEncabezado) {
-                // Escribir encabezado
-                for (int i = 0; i < tabla.size(); i++) {
-                    writer.write(tabla.get(i).getEncabezado());
-                    if (i < tabla.size() - 1) {
-                        writer.write(delimitador);
-                    }
-                }
-                writer.newLine();
-            }
+    // public void descargarACSV(String rutaArchivo) {
+    //     try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
+    //         if (tieneEncabezado) {
+    //             // Escribir encabezado
+    //             for (int i = 0; i < tabla.size(); i++) {
+    //                 writer.write(tabla.get(i).getEncabezado());
+    //                 if (i < tabla.size() - 1) {
+    //                     writer.write(delimitador);
+    //                 }
+    //             }
+    //             writer.newLine();
+    //         }
 
-            // Escribir datos fila por fila
-            for (int i = 0; i < getNumeroFilas(); i++) { // Recorre cada fila
-                for (int j = 0; j < tabla.size(); j++) { // Recorre cada columna
-                    Columna<?> columna = tabla.get(j);
-                    Object celda = columna.getCelda(i);
+    //         // Escribir datos fila por fila
+    //         for (int i = 0; i < getNumeroFilas(); i++) { // Recorre cada fila
+    //             for (int j = 0; j < tabla.size(); j++) { // Recorre cada columna
+    //                 Columna<?> columna = tabla.get(j);
+    //                 Object celda = columna.getCelda(i);
 
-                    // Convertir a "NA" si la celda es null y luego escribir
-                    writer.write(celda != null ? celda.toString() : "NA");
+    //                 // Convertir a "NA" si la celda es null y luego escribir
+    //                 writer.write(celda != null ? celda.toString() : "NA");
 
-                    // Agrega delimitador entre valores, pero no al final de la fila
-                    if (j < tabla.size() - 1) {
-                        writer.write(delimitador);
-                    }
-                }
-                writer.newLine(); // Nueva línea para la siguiente fila
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    //                 // Agrega delimitador entre valores, pero no al final de la fila
+    //                 if (j < tabla.size() - 1) {
+    //                     writer.write(delimitador);
+    //                 }
+    //             }
+    //             writer.newLine(); // Nueva línea para la siguiente fila
+    //         }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+    public void descargarACSV(String rutaArchivo){
+        ArchivoCSV archivo = new ArchivoCSV();
+        archivo.descargarACSV(this, rutaArchivo, tieneEncabezado, delimitador);
     }
 
     public int getNumeroFilas() {
@@ -310,16 +318,14 @@ public class Tabla {
 
     public List<Object> indexFila(String etiquetaFila) {
         inicializarEtiquetas();
-        int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
-        if (indiceFila == -1) {
-            throw new IllegalArgumentException("Etiqueta de fila no encontrada: " + etiquetaFila);
-        }
-
         List<Object> fila = new ArrayList<>();
-        for (Columna<?> columna : tabla) {
-            fila.add(columna.getCelda(indiceFila));
-        }
+
+        Integer indicefila = etiquetasFilas.get(etiquetaFila);
+
+        fila = this.obtenerFila(indicefila);
         return fila;
+
+        
     }
 
     public List<Object> indexColumna(String etiquetaColumna) {
@@ -336,7 +342,7 @@ public class Tabla {
 
     public Object indexCelda(String etiquetaFila, String etiquetaColumna) {
         inicializarEtiquetas(); // Asegura que las etiquetas estén inicializadas
-        int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
+        Integer indiceFila = etiquetasFilas.get(etiquetaFila);
         int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
 
         if (indiceFila == -1) {
@@ -527,7 +533,6 @@ public class Tabla {
         Tabla tablaFiltrada = new Tabla();
         tablaFiltrada.setColumnas(this.tabla);
    
-
         for(int i = 0; i < getNumeroFilas(); i++){
             if (evaluarFiltro(filtro, i)) {
                 tablaFiltrada.agregarFila(obtenerFila(i).toArray());
@@ -579,6 +584,9 @@ public class Tabla {
 
     private Object obtenerValorColumna(int filaIndex, String columna) {
         for (Columna<?> col : tabla) {
+            System.out.println(col.getEncabezado());
+            System.out.println(columna);
+
             if (col.getEncabezado().equals(columna)) {
                 return col.getCelda(filaIndex);
             }
@@ -716,6 +724,19 @@ public class Tabla {
         }
 
         return muestra;
+    }
+    
+    public Tabla copiaIndependiente() {
+        Tabla nuevaTabla = new Tabla();
+        nuevaTabla.delimitador = this.delimitador;
+        nuevaTabla.tieneEncabezado = this.tieneEncabezado;
+
+        for (Columna columna: tabla){
+            Columna<?> nuevacol = columna.clone();
+            nuevaTabla.agregarColumna(nuevacol);
+        }
+
+        return nuevaTabla;
     }
 
 }
