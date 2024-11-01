@@ -7,9 +7,10 @@ public class App {
     public static void main(String[] args) {
         String rutaArchivo = "C:/Users/Lucio/Documents/Algoritmos/TP_Algo./insurance.csv"; // Cambia esto por la ruta de
                                                                                            // tu archivo CSV
-        Tabla tabla = new Tabla(rutaArchivo, true, ",");
+        
+                                                                                           Tabla tabla = new Tabla(rutaArchivo, true, ",");
         // tabla.cargarCSV(rutaArchivo);
-        tabla.infoTabla();
+         tabla.infoTabla();
         // tabla.imprimirTabla();
 
         List<Object> fila = tabla.indexFila("1"); // Accede a la fila con etiqueta "1"
@@ -32,6 +33,11 @@ public class App {
         // Muestreo
         tabla.muestreo(5).imprimirTabla();
         System.out.println(tabla);
+
+        // String filtro = "salario > 340000";
+        // Tabla tablaFiltrada = tabla.filtrar(filtro);
+        // tablaFiltrada.imprimirTabla();
+
     }
 
 }

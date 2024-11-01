@@ -522,6 +522,86 @@ public class Tabla {
         return nuevaTabla;
     }
 
+
+    public Tabla filtrar(String filtro){
+        Tabla tablaFiltrada = new Tabla();
+        tablaFiltrada.setColumnas(this.tabla);
+   
+
+        for(int i = 0; i < getNumeroFilas(); i++){
+            if (evaluarFiltro(filtro, i)) {
+                tablaFiltrada.agregarFila(obtenerFila(i).toArray());
+            }
+        }
+
+        return tablaFiltrada;
+    }
+
+    private boolean evaluarFiltro(String filtro, int filaIndex){
+        String[] condiciones = filtro.split("and|or|not");
+        List<String> operadores = obtenerOperadores(filtro);
+        
+        boolean resultado = evaluarCondicion(condiciones[0].trim(), filaIndex);
+        for(int i = 1; i < condiciones.length; i++){
+            boolean condicionEvaluada = evaluarCondicion(condiciones[i], filaIndex);
+            String operador = operadores.get(i-1);
+
+            if (operador.equals("and")) {
+                resultado = resultado && condicionEvaluada;
+            } else if (operador.equals("or")) {
+                resultado = resultado || condicionEvaluada;
+            } else if (operador.equals("not")) {
+                resultado = !resultado;
+            }
+        }
+        return resultado;
+    }
+
+    private boolean evaluarCondicion(String filtro, int filaIndex) {
+        String[] partes = filtro.split(" ");
+        String columna = partes[0];
+        String operador = partes[1];
+        String condicion = partes[2];
+        
+        Object valorCelda = obtenerValorColumna(filaIndex, columna);
+
+        switch (operador) {
+            case "=":
+                return valorCelda.toString().equals(condicion);
+            case "<":
+                return Double.parseDouble(valorCelda.toString()) < Double.parseDouble(condicion);
+            case ">":
+                return Double.parseDouble(valorCelda.toString()) > Double.parseDouble(condicion);
+            default:
+                return false;
+        }
+    }
+
+    private Object obtenerValorColumna(int filaIndex, String columna) {
+        for (Columna<?> col : tabla) {
+            if (col.getEncabezado().equals(columna)) {
+                return col.getCelda(filaIndex);
+            }
+        }
+        throw new IllegalArgumentException("Columna no encontrada: " + columna);
+    }
+
+    private List<String> obtenerOperadores(String filtro) {
+        List<String> operadores = new ArrayList<>();
+        String[] partes = filtro.split(" ");
+
+        for(String parte : partes){
+            if (parte.equals("and") || parte.equals("or") || parte.equals("not")) {
+                operadores.add(parte);
+            }
+        }
+        return operadores;
+    }
+
+    public void setColumnas(List<Columna<?>> columnas) {
+        this.tabla = new ArrayList<>(columnas);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
