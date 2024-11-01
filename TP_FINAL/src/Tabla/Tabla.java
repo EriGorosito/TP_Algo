@@ -140,7 +140,6 @@ public class Tabla {
 
         for (int i = 0; i < valores.length; i++) {
             Columna columna = tabla.get(i);
-
             if (valores[i] == null) {
                 columna.agregarNA(); // Si el valor es nulo, agregamos "NA"
             } else {
