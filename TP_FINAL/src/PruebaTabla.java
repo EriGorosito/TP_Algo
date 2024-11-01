@@ -70,34 +70,34 @@ public class PruebaTabla {
         Tabla tablaDesdeLista = new Tabla(filas);
 
         // Imprimir la tabla
-        tablaDesdeLista.imprimirTabla();
+        // tablaDesdeLista.imprimirTabla();
 
-        //Acceso indexado
-        List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
-        System.out.println("Fila 1: " + fila);
+        // //Acceso indexado
+        // List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
+        // System.out.println("Fila 1: " + fila);
 
-        // Acceso a una columna completa
-        List<Object> columna = tablaDesdeLista.indexColumna("Columna 1");  // Accede a la columna "Nombre"
-        System.out.println("Columna 'Columna 1': " + columna);
+        // // Acceso a una columna completa
+        // List<Object> columna = tablaDesdeLista.indexColumna("Columna 1");  // Accede a la columna "Nombre"
+        // System.out.println("Columna 'Columna 1': " + columna);
 
-        // Acceso a una celda específica
-        Object celda = tablaDesdeLista.indexCelda("1", "Columna 1");  // Accede a la celda en fila "1" y columna "Nombre"
-        System.out.println("Celda en (1, Columna 1): " + celda);
+        // // Acceso a una celda específica
+        // Object celda = tablaDesdeLista.indexCelda("1", "Columna 1");  // Accede a la celda en fila "1" y columna "Nombre"
+        // System.out.println("Celda en (1, Columna 1): " + celda);
 
 
        
-        // String rutaArchivo = "tabla_salida.csv";
-        // tablaDesdeLista.descargarACSV(rutaArchivo);
+        String rutaArchivo = "/home/tareas/Documents/Algo-1/tabla_salida2.csv";
+        tablaDesdeLista.descargarACSV(rutaArchivo);
 
         // System.out.println("Archivo CSV generado en: " + rutaArchivo);
 
-        // String filtro = "Columna 1 > 10 and Columna 3 = true";
-        // Tabla tablaFiltrada = tablaDesdeLista.filtrar(filtro);
-        // tablaFiltrada.imprimirTabla();
+        //  String filtro = "Columna1 > 10 and Columna3 = true";
+        //  Tabla tablaFiltrada = tablaDesdeLista.filtrar(filtro);
+        //  tablaFiltrada.imprimirTabla();
 
-        Tabla nuevaTabla = tablaDesdeLista.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna 3"));
-        nuevaTabla.imprimirTabla();
-        nuevaTabla.infoTabla();
+        // Tabla nuevaTabla = tablaDesdeLista.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna 3"));
+        // nuevaTabla.imprimirTabla();
+        // nuevaTabla.infoTabla();
         
 
 // Crear tablas de prueba CONCATENAR
