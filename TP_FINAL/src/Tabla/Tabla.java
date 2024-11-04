@@ -284,7 +284,7 @@ public class Tabla {
 
         // Agregar las columnas a la nueva tabla
         for (Columna<?> columna : tabla) {
-            tablaOrdenada.agregarColumna(columna.clone()); // Asegúrate de que Columna tenga un método clone()
+            tablaOrdenada.agregarColumna(columna.copia()); // Asegúrate de que Columna tenga un método clone()
         }
 
         // Agregar las filas ordenadas a la nueva tabla
@@ -359,12 +359,21 @@ public class Tabla {
 
     public Tabla tail(int cantidad) {
         Tabla nuevaTabla = new Tabla();
-        if (cantidad > tabla.size()) {
-            throw new IndexOutOfBoundsException("Cantidad de columnas fuera de rango");
+
+        if (cantidad > getNumeroFilas()) {
+            throw new IndexOutOfBoundsException("Cantidad de filas fuera de rango");
         }
 
-        for (int i = 0; i < cantidad; i++) {
-            nuevaTabla.agregarColumna(tabla.get(i).clone());
+        for (Columna<?> columna : tabla) {
+            nuevaTabla.agregarColumna(columna.copia());
+        }
+
+        for (int i = getNumeroFilas() - cantidad; i < getNumeroFilas(); i++) {
+            List<Object> fila = new ArrayList<>();
+            for (Columna<?> columna : tabla) {
+                fila.add(columna.getCelda(i));
+            }
+            nuevaTabla.agregarFila(fila.toArray());
         }
 
         return nuevaTabla;
@@ -377,7 +386,6 @@ public class Tabla {
         if (encabezadosCol == null || encabezadosCol.isEmpty()) {
             for (int i = 0; i < this.tabla.size(); i++) {
                 indicesColumnas.add(i);
-                System.out.println(tabla.get(i).clone());
                 nuevaTabla.agregarColumna(tabla.get(i).copia());
             }
         } else {
@@ -408,7 +416,6 @@ public class Tabla {
                 int indiceFila = etiquetasFilas.indexOf(etiquetaFila);
                 for (int indiceColumna : indicesColumnas) {
                     nuevaFila.add(tabla.get(indiceColumna).getCelda(indiceFila));
-                    System.out.println(nuevaFila.size());
                 }
                 nuevaTabla.agregarFila(nuevaFila.toArray());
 
