@@ -14,7 +14,7 @@ public class Prueba_matriz {
 
         Tabla tablaDesdeMatriz = new Tabla(datos);
         tablaDesdeMatriz.imprimirTabla();
-
+        
          //Acceso indexado
         List<Object> fila = tablaDesdeMatriz.indexFila("1");  // Accede a la fila con etiqueta "1"
         System.out.println("Fila 1: " + fila);
@@ -38,25 +38,26 @@ public class Prueba_matriz {
         //descargar a csv
         String descarga_rutaArchivo = "tabla_salida4.csv";
         tablaDesdeMatriz.descargarACSV(descarga_rutaArchivo);
-
+        
 
 
         // Ordenamiento NO ANDA 
         List<String> l = new ArrayList<>();
-        l.add("Columna1");
-        tablaDesdeMatriz.ordenarFilas(l, true).imprimirTabla();
-        
+        l.add("Columna0");
+        tablaDesdeMatriz.ordenarFilas(l, false).imprimirTabla();
+         
 
         // Muestreo
         tablaDesdeMatriz.muestreo(2).imprimirTabla();
         System.out.println(tablaDesdeMatriz);
 
-        //Seleccion NO FUNCIONA BIEN EL IMPRIMIR TABLA
+        //Seleccion 
+
         Tabla tabla_seleccion = tablaDesdeMatriz.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna1"));
         tabla_seleccion.imprimirTabla();
         System.out.println(tabla_seleccion);
 
-        //ESTA MAL HECHO TAIL
+        
         Tabla head = tablaDesdeMatriz.head(1);
         Tabla tail = tablaDesdeMatriz.tail(2);
         System.out.println(head);
