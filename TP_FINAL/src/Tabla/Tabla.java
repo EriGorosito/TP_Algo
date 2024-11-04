@@ -18,7 +18,7 @@ public class Tabla {
     public Tabla() {
         this.tabla = new ArrayList<>();
         this.etiquetasFilas = new LinkedHashMap<>();
-        
+
     }
 
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
@@ -26,7 +26,17 @@ public class Tabla {
         this.tieneEncabezado = tieneEncabezado;
         this.etiquetasFilas = new LinkedHashMap<>();
         this.tabla = new ArrayList<>();
-        ArchivoCSV archivo = new ArchivoCSV(); 
+        ArchivoCSV archivo = new ArchivoCSV();
+        archivo.cargarCSV(this, rutaArchivo, delimitador, tieneEncabezado);
+        inicializarEtiquetas();
+    }
+
+    // Constructor con delimitador por default ","
+    public Tabla(String rutaArchivo, boolean tieneEncabezado) {
+        this.tieneEncabezado = tieneEncabezado;
+        this.etiquetasFilas = new LinkedHashMap<>();
+        this.tabla = new ArrayList<>();
+        ArchivoCSV archivo = new ArchivoCSV();
         archivo.cargarCSV(this, rutaArchivo, delimitador, tieneEncabezado);
         inicializarEtiquetas();
     }
@@ -113,9 +123,8 @@ public class Tabla {
 
     }
 
-
-    private void inicializarEtiquetas(){
-        for (int i = 0; i < getNumeroFilas(); i++){
+    private void inicializarEtiquetas() {
+        for (int i = 0; i < getNumeroFilas(); i++) {
             String clave = String.valueOf(i);
             this.etiquetasFilas.put(clave, i);
         }
@@ -156,7 +165,7 @@ public class Tabla {
         return fila;
     }
 
-    public void descargarACSV(String rutaArchivo){
+    public void descargarACSV(String rutaArchivo) {
         ArchivoCSV archivo = new ArchivoCSV();
         archivo.descargarACSV(this, rutaArchivo, tieneEncabezado, delimitador);
     }
@@ -215,7 +224,6 @@ public class Tabla {
         fila = this.obtenerFila(indicefila);
         return fila;
 
-        
     }
 
     public List<Object> indexColumna(String etiquetaColumna) {
@@ -425,12 +433,11 @@ public class Tabla {
         return nuevaTabla;
     }
 
-
-    public Tabla filtrar(String filtro){
+    public Tabla filtrar(String filtro) {
         Tabla tablaFiltrada = new Tabla();
         tablaFiltrada.setColumnas(this.tabla);
-   
-        for(int i = 0; i < getNumeroFilas(); i++){
+
+        for (int i = 0; i < getNumeroFilas(); i++) {
             if (evaluarFiltro(filtro, i)) {
                 tablaFiltrada.agregarFila(obtenerFila(i).toArray());
             }
@@ -439,14 +446,14 @@ public class Tabla {
         return tablaFiltrada;
     }
 
-    private boolean evaluarFiltro(String filtro, int filaIndex){
+    private boolean evaluarFiltro(String filtro, int filaIndex) {
         String[] condiciones = filtro.split("and|or|not");
         List<String> operadores = obtenerOperadores(filtro);
-        
+
         boolean resultado = evaluarCondicion(condiciones[0].trim(), filaIndex);
-        for(int i = 1; i < condiciones.length; i++){
+        for (int i = 1; i < condiciones.length; i++) {
             boolean condicionEvaluada = evaluarCondicion(condiciones[i], filaIndex);
-            String operador = operadores.get(i-1);
+            String operador = operadores.get(i - 1);
 
             if (operador.equals("and")) {
                 resultado = resultado && condicionEvaluada;
@@ -464,7 +471,7 @@ public class Tabla {
         String columna = partes[0];
         String operador = partes[1];
         String condicion = partes[2];
-        
+
         Object valorCelda = obtenerValorColumna(filaIndex, columna);
 
         switch (operador) {
@@ -495,7 +502,7 @@ public class Tabla {
         List<String> operadores = new ArrayList<>();
         String[] partes = filtro.split(" ");
 
-        for(String parte : partes){
+        for (String parte : partes) {
             if (parte.equals("and") || parte.equals("or") || parte.equals("not")) {
                 operadores.add(parte);
             }
@@ -622,13 +629,13 @@ public class Tabla {
 
         return muestra;
     }
-    
+
     public Tabla copiaIndependiente() {
         Tabla nuevaTabla = new Tabla();
         nuevaTabla.delimitador = this.delimitador;
         nuevaTabla.tieneEncabezado = this.tieneEncabezado;
 
-        for (Columna columna: tabla){
+        for (Columna columna : tabla) {
             Columna<?> nuevacol = columna.clone();
             nuevaTabla.agregarColumna(nuevacol);
         }
@@ -642,22 +649,22 @@ public class Tabla {
         if (indiceFila == null) {
             throw new IllegalArgumentException("La etiqueta de fila no existe: " + etiquetaFila);
         }
-    
+
         // Crear una copia de la tabla
         Tabla nuevaTabla = new Tabla(this);
-    
+
         // Eliminar la fila correspondiente de cada columna en la copia
         for (Columna<?> columna : nuevaTabla.tabla) {
             columna.getColumna().remove((int) indiceFila); // Eliminar el elemento en el índice específico
         }
-    
+
         // Actualizar las etiquetas de fila en la nueva tabla
         nuevaTabla.etiquetasFilas.clear();
         for (int i = 0; i < nuevaTabla.getNumeroFilas(); i++) {
             nuevaTabla.etiquetasFilas.put(String.valueOf(i), i);
         }
-    
+
         return nuevaTabla;
     }
-    
+
 }
