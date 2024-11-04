@@ -195,7 +195,7 @@ public class Tabla {
         return tipodeDatos;
     }
 
-    public void infoTabla() {
+    public void info() {
         System.out.println("Información de la tabla:");
         System.out.println("Cantidad de filas " + this.getNumeroFilas());
         System.out.println("Cantidad de columnas: " + this.getCantColumna());
