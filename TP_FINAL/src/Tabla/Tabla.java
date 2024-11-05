@@ -45,24 +45,14 @@ public class Tabla {
     // CONSTRUCTOR para generar una estructura tavular a través de copia profunda de
     // otra estructura del mismo tipo.
     public Tabla(Tabla otraTabla) {
-        this.tabla = new ArrayList<>();
         this.delimitador = otraTabla.delimitador;
         this.tieneEncabezado = otraTabla.tieneEncabezado;
-        this.etiquetasFilas = new LinkedHashMap<>();
-
+        this.tabla = new ArrayList<>();
+        
         for (Columna<?> columna : otraTabla.tabla) {
-            // Crea una nueva columna según el tipo de columna original
-            if (columna instanceof ColumnaNumerica) {
-                this.tabla.add(new ColumnaNumerica((ColumnaNumerica) columna));
-            } else if (columna instanceof ColumnaBooleana) {
-                this.tabla.add(new ColumnaBooleana((ColumnaBooleana) columna));
-            } else if (columna instanceof ColumnaCadena) {
-                this.tabla.add(new ColumnaCadena((ColumnaCadena) columna));
-            }
+            Columna<?> nuevaColumna = columna.clone(); 
+            this.agregarColumna(nuevaColumna);         
         }
-
-        inicializarEtiquetas();
-
     }
 
     // CONSTRUCTOR que toma una matriz bidimensional para crear la tabla.(estructura
@@ -138,6 +128,10 @@ public class Tabla {
     // para permitir la adición de columnas individuales.
     public void agregarColumna(Columna<?> columna) {
         tabla.add(columna);
+    }
+
+    public void agregarColumna(List<Object> columna){
+        
     }
 
     public void agregarFila(Object... valores) {
@@ -667,5 +661,12 @@ public class Tabla {
 
         return nuevaTabla;
     }
-
+    
+    public void eliminarColumna(String encabezado){
+        int indice = this.getEncabezados().indexOf(encabezado.trim());
+        if (indice == -1){
+            throw new ColumnaNoEncontrada ("No se encontro una columna con ese encabezado");
+        }
+        tabla.remove(indice);
+    }
 }

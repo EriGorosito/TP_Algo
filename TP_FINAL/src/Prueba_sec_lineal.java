@@ -15,7 +15,7 @@ public class Prueba_sec_lineal {
 
         // Crear una tabla a partir de la lista de filas
         Tabla tablaDesdeLista = new Tabla(filas);
-
+/* 
         // Imprimir la tabla
         // tablaDesdeLista.imprimirTabla();
 
@@ -42,7 +42,7 @@ public class Prueba_sec_lineal {
         //descargar a csv
         String descarga_rutaArchivo = "tabla_salida2.csv";
         tablaDesdeLista.descargarACSV(descarga_rutaArchivo);
-
+*/
 
 
         // Ordenamiento NO ANDA 
