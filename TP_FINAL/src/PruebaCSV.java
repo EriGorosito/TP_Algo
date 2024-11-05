@@ -10,7 +10,7 @@ public class PruebaCSV {
         Tabla tabla = new Tabla(rutaArchivo, true, ",");
         Tabla tabla2 = new Tabla(rutaArchivo, true, ",");
         
-        // tabla.info();
+        tabla.info();
 
         // Tabla tablita = tabla.eliminarFilaPorEtiqueta("1");
         // System.out.println(tabla);
@@ -40,10 +40,10 @@ public class PruebaCSV {
 
         // Ordenamiento
 
-        List<String> l = new ArrayList<>();
-        l.add("age");
-        l.add("bmi");
-        tabla.ordenarFilas(l, false).imprimirTabla();
+        // List<String> l = new ArrayList<>();
+        // l.add("age");
+        // l.add("bmi");
+        // tabla.ordenarFilas(l, false).imprimirTabla();
         
 
         // // Muestreo
