@@ -28,9 +28,8 @@ public class Prueba_matriz {
         System.out.println("Celda en (1, Columna1): " + celda);
 
         //eliminar fila
-        Tabla tablita = tablaDesdeMatriz.eliminarFilaPorEtiqueta("1");
+        tablaDesdeMatriz.eliminarFilaPorEtiqueta("1");
         System.out.println(tablaDesdeMatriz);
-        System.out.println(tablita);
 
         Tabla copia = tablaDesdeMatriz.copiaIndependiente();
         System.out.println(copia);
