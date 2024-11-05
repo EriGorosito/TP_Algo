@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import Tabla.Columna.Columna;
+import Tabla.Columna.ColumnaBooleana;
+import Tabla.Columna.ColumnaCadena;
+import Tabla.Columna.ColumnaNumerica;
 import Tabla.excepciones.*;
 
 public class Tabla {

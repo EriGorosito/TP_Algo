@@ -1,4 +1,4 @@
-package Tabla;
+package Tabla.Columna;
 
 import java.util.ArrayList;
 
