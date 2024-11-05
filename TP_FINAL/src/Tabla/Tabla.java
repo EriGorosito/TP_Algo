@@ -770,7 +770,7 @@ public class Tabla {
 
         }
         else {
-        throw new IllegalArgumentException("El tipo de dato del nuevo valor no coincide con el tipo de la celda.");
+            throw new TipoDatoException("El tipo de dato del nuevo valor no coincide con el tipo de la celda.");
         }
     }
 }
