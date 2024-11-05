@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import Tabla.excepciones.*;
+
 public class Tabla {
     private List<Columna<?>> tabla;
     private String delimitador = ",";
@@ -18,7 +20,6 @@ public class Tabla {
     public Tabla() {
         this.tabla = new ArrayList<>();
         this.etiquetasFilas = new LinkedHashMap<>();
-
     }
 
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
@@ -99,7 +100,7 @@ public class Tabla {
 
         // Suponemos que todas las filas tienen el mismo número de columnas
         if (filas.isEmpty()) {
-            throw new IllegalArgumentException("La lista de filas no puede estar vacía.");
+            throw new FilaVaciaException("La lista de filas no puede estar vacía.");
         }
 
         // Agregar las columnas a la tabla, basándose en la primera fila
@@ -144,7 +145,7 @@ public class Tabla {
         if (valores.length != tabla.size()) {
             System.out.println(this.tabla.size());
             System.out.println(valores.length);
-            throw new IllegalArgumentException("Número de valores no coincide con el número de columnas.");
+            throw new TamanioFilaException("Número de valores no coincide con el número de columnas.");
         }
 
         for (int i = 0; i < valores.length; i++) {
@@ -231,7 +232,7 @@ public class Tabla {
         int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
         if (indiceColumna == -1) {
             System.out.println("Etiquetas de columnas disponibles: " + this.getEncabezados());
-            throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
+            throw new EtiquetaColumnaException("Etiqueta de columna no encontrada: " + etiquetaColumna);
         }
 
         Columna<?> columna = tabla.get(indiceColumna);
@@ -244,10 +245,10 @@ public class Tabla {
         int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
 
         if (indiceFila == -1) {
-            throw new IllegalArgumentException("Etiqueta de fila no encontrada: " + etiquetaFila);
+            throw new EtiquetaColumnaException("Etiqueta de fila no encontrada: " + etiquetaFila);
         }
         if (indiceColumna == -1) {
-            throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
+            throw new EtiquetaColumnaException("Etiqueta de columna no encontrada: " + etiquetaColumna);
         }
 
         return tabla.get(indiceColumna).getCelda(indiceFila);
@@ -272,7 +273,7 @@ public class Tabla {
                 for (String etiquetaColumna : etiquetasColumnas) {
                     int indiceColumna = getEncabezados().indexOf(etiquetaColumna);
                     if (indiceColumna == -1) {
-                        throw new IllegalArgumentException("Etiqueta de columna no encontrada: " + etiquetaColumna);
+                        throw new EtiquetaColumnaException("Etiqueta de columna no encontrada: " + etiquetaColumna);
                     }
 
                     Comparable valor1 = (Comparable) fila1.get(indiceColumna);
@@ -306,7 +307,7 @@ public class Tabla {
     public static Tabla concatenarTablas(Tabla tabla1, Tabla tabla2) {
         // Validación: Comparar cantidad de columnas
         if (tabla1.tabla.size() != tabla2.tabla.size()) {
-            throw new IllegalArgumentException("Las tablas no tienen la misma cantidad de columnas.");
+            throw new DiferenteCantidadColumnasException("Las tablas no tienen la misma cantidad de columnas.");
         }
 
         // Validación: Verificar que las columnas coincidan en tipo, orden y etiquetas
@@ -317,7 +318,7 @@ public class Tabla {
             // Verificar tipo de datos, nombre y orden
             if (!columna1.getClass().equals(columna2.getClass()) ||
                     !columna1.getEncabezado().equals(columna2.getEncabezado())) {
-                throw new IllegalArgumentException("Las columnas no coinciden en tipo de datos, orden o etiquetas.");
+                throw new a("Las columnas no coinciden en tipo de datos, orden o etiquetas.");
             }
         }
 
@@ -347,7 +348,7 @@ public class Tabla {
         Tabla nuevaTabla = new Tabla();
 
         if (cantidad > getNumeroFilas()) {
-            throw new IndexOutOfBoundsException("Cantidad de filas fuera de rango");
+            throw new FilasRangoException("Cantidad de filas fuera de rango");
         }
 
         for (Columna<?> columna : tabla) {
@@ -369,7 +370,7 @@ public class Tabla {
         Tabla nuevaTabla = new Tabla();
 
         if (cantidad > getNumeroFilas()) {
-            throw new IndexOutOfBoundsException("Cantidad de filas fuera de rango");
+            throw new FilasRangoException("Cantidad de filas fuera de rango");
         }
 
         for (Columna<?> columna : tabla) {
@@ -404,7 +405,7 @@ public class Tabla {
                     indicesColumnas.add(indice);
                     nuevaTabla.agregarColumna(tabla.get(indice).copia()); // Agregar la columna seleccionada
                 } else {
-                    throw new IllegalArgumentException("Encabezado no encontrado: " + encabezado);
+                    throw new EncabezadoNoEncontradoException("Encabezado no encontrado: " + encabezado);
                 }
             }
         }
@@ -495,7 +496,7 @@ public class Tabla {
                 return col.getCelda(filaIndex);
             }
         }
-        throw new IllegalArgumentException("Columna no encontrada: " + columna);
+        throw new ColumnaNoEncontrada("Columna no encontrada: " + columna);
     }
 
     private List<String> obtenerOperadores(String filtro) {
@@ -599,7 +600,7 @@ public class Tabla {
 
     public Tabla muestreo(int cantidad) {
         if (cantidad <= 0 || cantidad > getNumeroFilas()) {
-            throw new IllegalArgumentException("La cantidad de muestras debe estar entre 1 y " + getNumeroFilas());
+            throw new MuestrasRangoException("La cantidad de muestras debe estar entre 1 y " + getNumeroFilas());
         }
 
         Tabla muestra = new Tabla(); // Nueva tabla para almacenar la muestra
@@ -647,7 +648,7 @@ public class Tabla {
         // Verificar que la etiqueta de la fila exista
         Integer indiceFila = etiquetasFilas.get(etiquetaFila);
         if (indiceFila == null) {
-            throw new IllegalArgumentException("La etiqueta de fila no existe: " + etiquetaFila);
+            throw new EtiquetaFilaException("La etiqueta de fila no existe: " + etiquetaFila);
         }
 
         // Crear una copia de la tabla
