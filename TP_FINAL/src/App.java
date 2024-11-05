@@ -5,9 +5,8 @@ public class App {
     public static void main(String[] args) {
         String rutaArchivo = "./insurance.csv";
         Tabla tabla = new Tabla(rutaArchivo, true);
-        Tabla tablita = tabla.eliminarFilaPorEtiqueta("1");
+        tabla.eliminarFilaPorEtiqueta("1");
         System.out.println(tabla);
-        System.out.println(tablita);
         // tabla.cargarCSV(rutaArchivo);
         // tabla.infoTabla();
         // // tabla.imprimirTabla();

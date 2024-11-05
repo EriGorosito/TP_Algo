@@ -638,28 +638,23 @@ public class Tabla {
         return nuevaTabla;
     }
 
-    public Tabla eliminarFilaPorEtiqueta(String etiquetaFila) {
+    public void eliminarFilaPorEtiqueta(String etiquetaFila) {
         // Verificar que la etiqueta de la fila exista
         Integer indiceFila = etiquetasFilas.get(etiquetaFila);
         if (indiceFila == null) {
             throw new EtiquetaFilaException("La etiqueta de fila no existe: " + etiquetaFila);
         }
 
-        // Crear una copia de la tabla
-        Tabla nuevaTabla = new Tabla(this);
-
         // Eliminar la fila correspondiente de cada columna en la copia
-        for (Columna<?> columna : nuevaTabla.tabla) {
+        for (Columna<?> columna : this.tabla) {
             columna.getColumna().remove((int) indiceFila); // Eliminar el elemento en el índice específico
         }
 
         // Actualizar las etiquetas de fila en la nueva tabla
-        nuevaTabla.etiquetasFilas.clear();
-        for (int i = 0; i < nuevaTabla.getNumeroFilas(); i++) {
-            nuevaTabla.etiquetasFilas.put(String.valueOf(i), i);
+        this.etiquetasFilas.clear();
+        for (int i = 0; i < this.getNumeroFilas(); i++) {
+            this.etiquetasFilas.put(String.valueOf(i), i);
         }
-
-        return nuevaTabla;
     }
     
     public void eliminarColumna(String encabezado){
