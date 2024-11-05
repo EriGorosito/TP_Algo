@@ -45,4 +45,10 @@ public class ColumnaBooleana extends Columna<Boolean>{
     public Columna<Boolean> copia() {
         return new ColumnaBooleana(this.getEncabezado());
     }
+
+    @Override
+    public void modificarDato(int indice, Object nuevoValor) {
+        
+        this.columna.set(indice,(Boolean) nuevoValor);
+    }
 }

@@ -124,6 +124,14 @@ public class Tabla {
     public Columna<?> getColumna(int posicion) {
         return tabla.get(posicion);
     }
+    public Columna<?> getColumna(String encabezado) {
+        for(Columna<?> columna : this.tabla){
+            if(encabezado == columna.getEncabezado()){
+                return columna;
+            }
+        }
+        throw new ColumnaNoEncontrada ("No se encontro una columna con ese encabezado");
+    }
 
     // para permitir la adición de columnas individuales.
     public void agregarColumna(Columna<?> columna) {
@@ -239,7 +247,7 @@ public class Tabla {
         int indiceColumna = this.getEncabezados().indexOf(etiquetaColumna);
 
         if (indiceFila == -1) {
-            throw new EtiquetaColumnaException("Etiqueta de fila no encontrada: " + etiquetaFila);
+            throw new EtiquetaFilaException("Etiqueta de fila no encontrada: " + etiquetaFila);
         }
         if (indiceColumna == -1) {
             throw new EtiquetaColumnaException("Etiqueta de columna no encontrada: " + etiquetaColumna);
@@ -663,5 +671,30 @@ public class Tabla {
             throw new ColumnaNoEncontrada ("No se encontro una columna con ese encabezado");
         }
         tabla.remove(indice);
+    }
+
+    public void modificarCelda(String encabezado, String etiquetaFila, Object nuevoValor){
+        int indiceColumna = this.getEncabezados().indexOf(encabezado);
+        Integer indiceFila = etiquetasFilas.get(etiquetaFila);
+
+        if (indiceColumna == -1) {
+            throw new ColumnaNoEncontrada("La columna con el encabezado especificado no existe.");
+        }
+        if (indiceFila == -1) {
+            throw new EtiquetaFilaException("Etiqueta de fila no encontrada: ");
+        }
+        Columna columna = this.getColumna(indiceColumna);
+        Object celda = columna.getCelda(indiceFila);
+
+        if ((celda instanceof Number && nuevoValor instanceof Number) || 
+        (celda instanceof String && nuevoValor instanceof String) || 
+        (celda instanceof Boolean && nuevoValor instanceof Boolean)) {
+
+            this.tabla.get(indiceColumna).modificarDato(indiceFila, nuevoValor);
+
+        }
+        else {
+        throw new IllegalArgumentException("El tipo de dato del nuevo valor no coincide con el tipo de la celda.");
+        }
     }
 }

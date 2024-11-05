@@ -36,6 +36,8 @@ public abstract class Columna<T> {
 
     public abstract boolean validarDato(T celda);
 
+    public abstract void modificarDato(int indice, Object nuevoValor);
+
     @Override
     public String toString() {
         String salida = "";

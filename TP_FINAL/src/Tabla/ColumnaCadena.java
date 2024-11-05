@@ -48,5 +48,9 @@ public class ColumnaCadena extends Columna<String>{
         return new ColumnaCadena(this.getEncabezado());
     }
 
+    @Override
+    public void modificarDato(int indice, Object nuevoValor) {
+        this.columna.set(indice, nuevoValor.toString());
+    }
 
 }

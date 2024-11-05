@@ -48,4 +48,9 @@ public class ColumnaNumerica extends Columna<Number>{
     public Columna<Number> copia() {
         return new ColumnaNumerica(this.getEncabezado());
     }
+
+    @Override
+    public void modificarDato(int indice, Object nuevoValor) {
+        this.columna.set(indice, (Number) nuevoValor);
+    }
 }
