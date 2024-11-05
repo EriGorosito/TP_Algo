@@ -293,7 +293,7 @@ public class Tabla {
 
         // Agregar las columnas a la nueva tabla
         for (Columna<?> columna : tabla) {
-            tablaOrdenada.agregarColumna(columna.copia()); // Asegúrate de que Columna tenga un método clone()
+            tablaOrdenada.agregarColumna(columna.copia());
         }
 
         // Agregar las filas ordenadas a la nueva tabla
@@ -328,7 +328,7 @@ public class Tabla {
         // Copiar columnas de tabla1 a la tabla concatenada (solo una vez, ya que ambas
         // tablas tienen las mismas columnas)
         for (Columna<?> columna : tabla1.tabla) {
-            tablaConcatenada.tabla.add(columna.clone()); // Copia profunda de la columna
+            tablaConcatenada.tabla.add(columna.copia()); // Copia profunda de la columna
         }
 
         // Agregar filas de tabla1
