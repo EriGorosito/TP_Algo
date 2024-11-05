@@ -87,32 +87,52 @@ public class Tabla {
 
     public Tabla(List<Object[]> filas) {
         this(); // Llama al constructor vacío para inicializar la tabla
-
-        // Suponemos que todas las filas tienen el mismo número de columnas
-        if (filas.isEmpty()) {
+ 
+ 
+        if (filas == null || filas.isEmpty()) {
             throw new FilaVaciaException("La lista de filas no puede estar vacía.");
         }
-
-        // Agregar las columnas a la tabla, basándose en la primera fila
-        for (int col = 0; col < filas.get(0).length; col++) {
-            // Determinar el tipo de la columna a partir de los valores de la primera fila
-            Object valor = filas.get(0)[col];
-            if (valor instanceof Number) {
+ 
+ 
+        int numColumnas = filas.get(0).length;
+ 
+ 
+        // Determina el tipo de cada columna recorriendo todas las filas
+        for (int col = 0; col < numColumnas; col++) {
+            boolean esNumerico = true;
+            boolean esBooleano = true;
+ 
+ 
+            for (Object[] fila : filas) {
+                Object valor = fila[col];
+                if (valor != null) {
+                    if (!(valor instanceof Number)) {
+                        esNumerico = false;
+                    }
+                    if (!(valor instanceof Boolean)) {
+                        esBooleano = false;
+                    }
+                }
+            }
+ 
+ 
+            // Crear la columna según el tipo dominante
+            if (esNumerico) {
                 tabla.add(new ColumnaNumerica("Columna " + (col + 1)));
-            } else if (valor instanceof Boolean) {
+            } else if (esBooleano) {
                 tabla.add(new ColumnaBooleana("Columna " + (col + 1)));
             } else {
                 tabla.add(new ColumnaCadena("Columna " + (col + 1)));
             }
         }
-
+ 
+ 
         // Agregar cada fila a la tabla
         for (Object[] fila : filas) {
             agregarFila(fila);
         }
-        inicializarEtiquetas();
-
     }
+ 
 
     private void inicializarEtiquetas() {
         for (int i = 0; i < getNumeroFilas(); i++) {
@@ -138,27 +158,83 @@ public class Tabla {
         tabla.add(columna);
     }
 
-    public void agregarColumna(List<Object> columna){
-        
+    public void agregarColumna(List<Object> secuencia) {
+        int numero = getCantColumna() + 1;
+ 
+ 
+        if (secuencia == null || secuencia.isEmpty()) {
+            throw new IllegalArgumentException("La secuencia no puede ser nula o vacía");
+        }
+ 
+ 
+        // Determina el tipo de columna en función de los elementos de la secuencia
+        Columna<?> nuevaColumna;
+       
+        // Verifica si todos los elementos son numéricos (o nulos)
+        if (secuencia.stream().allMatch(elemento -> elemento == null || elemento instanceof Number)) {
+            nuevaColumna = new ColumnaNumerica("Columna" + numero);
+            for (Object elemento : secuencia) {
+                if(elemento == null){
+                    ((ColumnaNumerica) nuevaColumna).agregarNA();
+                    continue;
+                }
+                ((ColumnaNumerica) nuevaColumna).agregarDato((Number) elemento); // Permite valores nulos
+            }
+        }
+        // Verifica si todos los elementos son booleanos (o nulos)
+        else if (secuencia.stream().allMatch(elemento -> elemento == null || elemento instanceof Boolean)) {
+            nuevaColumna = new ColumnaBooleana("Columna" + numero);
+            for (Object elemento : secuencia) {
+                if(elemento == null){
+                    ((ColumnaBooleana) nuevaColumna).agregarNA();
+                    continue;
+                }
+                ((ColumnaBooleana) nuevaColumna).agregarDato((Boolean) elemento);  // Permite valores nulos
+            }
+        }
+        // Si no son numéricos ni booleanos, se asume que son cadenas (o nulos)
+        else {
+            nuevaColumna = new ColumnaCadena("Columna" + numero);
+            for (Object elemento : secuencia) {
+                if(elemento == null){
+                    ((ColumnaCadena) nuevaColumna).agregarNA();
+                    continue;
+                }
+                ((ColumnaCadena) nuevaColumna).agregarDato(elemento == null ? null : elemento.toString());  // Permite valores nulos
+            }
+        }
+ 
+ 
+        // Agrega la nueva columna a la tabla
+        this.agregarColumna(nuevaColumna);
     }
+ 
 
     public void agregarFila(Object... valores) {
+
 
         if (valores.length != tabla.size()) {
             System.out.println(this.tabla.size());
             System.out.println(valores.length);
             throw new TamanioFilaException("Número de valores no coincide con el número de columnas.");
         }
-
+ 
+ 
         for (int i = 0; i < valores.length; i++) {
             Columna columna = tabla.get(i);
             if (valores[i] == null) {
                 columna.agregarNA(); // Si el valor es nulo, agregamos "NA"
-            } else {
-                columna.agregarDato(valores[i]);
+            } else if (columna instanceof ColumnaNumerica){
+                columna.agregarDato((Number)valores[i]);
+            }else if(columna instanceof ColumnaBooleana){
+                columna.agregarDato((Boolean) valores[i]);
+            }else{
+                columna.agregarDato(valores[i].toString());
             }
+           
         }
     }
+ 
 
     private List<Object> obtenerFila(int indice) {
         List<Object> fila = new ArrayList<>();
