@@ -17,13 +17,11 @@ public class App {
         // System.out.println("Fila 1: " + fila);
 
         // // Acceso a una columna completa
-        // List<Object> columna = tabla.indexColumna("age"); // Accede a la columna
-        // "Nombre"
-        // // System.out.println("Columna 'age': " + columna);
+        List<Object> columna = tabla.indexColumna("age");
+        System.out.println("Columna 'age': " + columna);
 
-        // // Acceso a una celda específica
-        // Object celda = tabla.indexCelda("1", "sex"); // Accede a la celda en fila "1"
-        // y columna "Nombre"
+        // Acceso a una celda específica
+        // Object celda = tabla.indexCelda("1", "sex");
         // System.out.println("Celda en (1, Nombre): " + celda);
 
         // // Ordenamiento

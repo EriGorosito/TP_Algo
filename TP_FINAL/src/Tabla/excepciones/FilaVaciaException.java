@@ -1,5 +1,7 @@
 package Tabla.excepciones;
 
-public class FilaVaciaException {
-
+public class FilaVaciaException extends RuntimeException {
+    public FilaVaciaException(String mensaje) {
+        super(mensaje);
+    }
 }
