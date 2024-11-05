@@ -60,10 +60,8 @@ public class Prueba_copia_prof {
          Object celda = tablaCopia.indexCelda("1", "Columna Numerica");  // Accede a la celda en fila "1" y columna "Nombre"
          System.out.println("Celda en (1, Columna Numerica): " + celda);
  
-         //eliminar fila
-         Tabla tablita = tablaCopia.eliminarFilaPorEtiqueta("0");
+         //eliminar filatablaCopia.eliminarFilaPorEtiqueta("0");
          System.out.println(tablaCopia);
-         System.out.println(tablita);
  
          Tabla copia = tablaCopia.copiaIndependiente();
          System.out.println(copia);

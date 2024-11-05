@@ -17,8 +17,10 @@ public class App {
 
         // // Acceso a una columna completa
         List<Object> columna = tabla.indexColumna("age");
-        System.out.println("Columna 'age': " + columna);
+        //System.out.println("Columna 'age': " + columna);
 
+        tabla.modificarCelda("age", "1", 1);
+        System.out.println(tabla);
         // Acceso a una celda específica
         // Object celda = tabla.indexCelda("1", "sex");
         // System.out.println("Celda en (1, Nombre): " + celda);
