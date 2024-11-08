@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import javax.xml.bind.TypeConstraintException;
 
@@ -171,7 +172,6 @@ public class Tabla {
             throw new IllegalArgumentException("La secuencia no puede ser nula o vacía");
         }
  
- 
         // Determina el tipo de columna en función de los elementos de la secuencia
         Columna<?> nuevaColumna;
        
@@ -213,7 +213,60 @@ public class Tabla {
         // Agrega la nueva columna a la tabla
         this.agregarColumna(nuevaColumna);
     }
+    
+    public void agregarColumna(String encabezado, List<Object> secuencia) {
+        int numero = getCantColumna() + 1;
  
+ 
+        if (secuencia == null || secuencia.isEmpty()) {
+            throw new IllegalArgumentException("La secuencia no puede ser nula o vacía");
+        }
+ 
+        // Determina el tipo de columna en función de los elementos de la secuencia
+        Columna<?> nuevaColumna;
+       
+        // Verifica si todos los elementos son numéricos (o nulos)
+        if (secuencia.stream().allMatch(elemento -> elemento == null || elemento instanceof Number)) {
+            nuevaColumna = new ColumnaNumerica(encabezado);
+            for (Object elemento : secuencia) {
+                if(elemento == null){
+                    ((ColumnaNumerica) nuevaColumna).agregarNA();
+                    continue;
+                }
+                ((ColumnaNumerica) nuevaColumna).agregarDato((Number) elemento); // Permite valores nulos
+            }
+        }
+        // Verifica si todos los elementos son booleanos (o nulos)
+        else if (secuencia.stream().allMatch(elemento -> elemento == null || elemento instanceof Boolean)) {
+            nuevaColumna = new ColumnaBooleana(encabezado);
+            for (Object elemento : secuencia) {
+                if(elemento == null){
+                    ((ColumnaBooleana) nuevaColumna).agregarNA();
+                    continue;
+                }
+                ((ColumnaBooleana) nuevaColumna).agregarDato((Boolean) elemento);  // Permite valores nulos
+            }
+        }
+        // Si no son numéricos ni booleanos, se asume que son cadenas (o nulos)
+        else {
+            nuevaColumna = new ColumnaCadena(encabezado);
+            for (Object elemento : secuencia) {
+                if(elemento == null){
+                    ((ColumnaCadena) nuevaColumna).agregarNA();
+                    continue;
+                }
+                ((ColumnaCadena) nuevaColumna).agregarDato(elemento == null ? null : elemento.toString());  // Permite valores nulos
+            }
+        }
+ 
+ 
+        // Agrega la nueva columna a la tabla
+        this.agregarColumna(nuevaColumna);
+    }
+
+    public Tabla filtrar(List<String> col, List<Predicate<?>> cond, String conector) {
+        return new Tabla(); 
+    }
 
     public void agregarFila(Object... valores) {
         if (valores.length != tabla.size()) {
@@ -753,7 +806,7 @@ public class Tabla {
         tabla.remove(indice);
     }
 
-    public void modificarCelda(String encabezado, String etiquetaFila, Object nuevoValor){
+    public void modificarCelda(String encabezado, String etiquetaFila, String nuevoValor){
         int indiceColumna = this.getEncabezados().indexOf(encabezado);
         Integer indiceFila = etiquetasFilas.get(etiquetaFila);
 
@@ -766,12 +819,50 @@ public class Tabla {
         Columna columna = this.getColumna(indiceColumna);
         Object celda = columna.getCelda(indiceFila);
 
-        if ((celda instanceof Number && nuevoValor instanceof Number) || 
-        (celda instanceof String && nuevoValor instanceof String) || 
-        (celda instanceof Boolean && nuevoValor instanceof Boolean)) {
-
+        if (celda instanceof String){
             this.tabla.get(indiceColumna).modificarDato(indiceFila, nuevoValor);
+        }
+        else {
+            throw new TipoDatoException("El tipo de dato del nuevo valor no coincide con el tipo de la celda.");
+        }
+    }
 
+    public void modificarCelda(String encabezado, String etiquetaFila, Number nuevoValor){
+        int indiceColumna = this.getEncabezados().indexOf(encabezado);
+        Integer indiceFila = etiquetasFilas.get(etiquetaFila);
+
+        if (indiceColumna == -1) {
+            throw new ColumnaNoEncontrada("La columna con el encabezado especificado no existe.");
+        }
+        if (indiceFila == -1) {
+            throw new EtiquetaFilaException("Etiqueta de fila no encontrada: ");
+        }
+        Columna columna = this.getColumna(indiceColumna);
+        Object celda = columna.getCelda(indiceFila);
+
+        if (celda instanceof Number){
+            this.tabla.get(indiceColumna).modificarDato(indiceFila, nuevoValor);
+        }
+        else {
+            throw new TipoDatoException("El tipo de dato del nuevo valor no coincide con el tipo de la celda.");
+        }
+    }
+
+    public void modificarCelda(String encabezado, String etiquetaFila, Boolean nuevoValor){
+        int indiceColumna = this.getEncabezados().indexOf(encabezado);
+        Integer indiceFila = etiquetasFilas.get(etiquetaFila);
+
+        if (indiceColumna == -1) {
+            throw new ColumnaNoEncontrada("La columna con el encabezado especificado no existe.");
+        }
+        if (indiceFila == -1) {
+            throw new EtiquetaFilaException("Etiqueta de fila no encontrada: ");
+        }
+        Columna columna = this.getColumna(indiceColumna);
+        Object celda = columna.getCelda(indiceFila);
+
+        if (celda instanceof Boolean){
+            this.tabla.get(indiceColumna).modificarDato(indiceFila, nuevoValor);
         }
         else {
             throw new TipoDatoException("El tipo de dato del nuevo valor no coincide con el tipo de la celda.");
