@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.xml.bind.TypeConstraintException;
+
 import Tabla.Columna.Columna;
 import Tabla.Columna.ColumnaBooleana;
-import Tabla.Columna.ColumnaCadena;
 import Tabla.Columna.ColumnaNumerica;
 import Tabla.excepciones.*;
 
@@ -150,7 +151,7 @@ public class Tabla {
     }
     public Columna<?> getColumna(String encabezado) {
         for(Columna<?> columna : this.tabla){
-            if(encabezado == columna.getEncabezado()){
+            if(encabezado.equals(columna.getEncabezado())){
                 return columna;
             }
         }
@@ -215,8 +216,6 @@ public class Tabla {
  
 
     public void agregarFila(Object... valores) {
-
-
         if (valores.length != tabla.size()) {
             System.out.println(this.tabla.size());
             System.out.println(valores.length);
@@ -263,16 +262,17 @@ public class Tabla {
 
     public List<String> getEncabezados() {
         List<String> encabezados = new ArrayList<>();
-        for (Columna columna : tabla) {
-            String encabezado = columna.getEncabezado(); // Obtener el encabezado
-
-            // Verificar si el encabezado es nulo
-            if (encabezado != null) {
-                encabezados.add(encabezado.trim()); // Agregar encabezado sin espacios en blanco
-            } else {
-                encabezados.add("NA"); // Agregar un valor por defecto si es nulo
+        if(this.tieneEncabezado == true){
+            for (Columna columna : tabla) {
+                String encabezado = columna.getEncabezado(); // Obtener el encabezado
+    
+                // Verificar si el encabezado es nulo
+                if (encabezado != null) {
+                    encabezados.add(encabezado.trim()); // Agregar encabezado sin espacios en blanco
+                } else {
+                    encabezados.add("NA"); // Agregar un valor por defecto si es nulo
+                }
             }
-            // encabezados.add(columna.getEncabezado().trim());
         }
         return encabezados;
     }
@@ -706,7 +706,7 @@ public class Tabla {
 
         // Agregar las filas seleccionadas a la nueva tabla
         for (int indice : indicesSeleccionados) {
-            List<Object> fila = obtenerFila(indice);
+            List<?> fila = obtenerFila(indice);
             muestra.agregarFila(fila.toArray());
         }
 
@@ -775,6 +775,82 @@ public class Tabla {
         }
         else {
             throw new TipoDatoException("El tipo de dato del nuevo valor no coincide con el tipo de la celda.");
+        }
+    }
+
+    public void imputarNA(String nuevoValor){
+        
+        for(Columna columna : this.tabla){
+            int i = 0;
+            for(Object celda : columna.getColumna()){
+                if (celda == null){
+                    if (columna.getTipoDato() == "String"){
+                        columna.modificarDato(i, nuevoValor);
+                    }
+                }
+                i++;
+            }
+        }
+    }  
+
+    public void imputarNA(Number nuevoValor){
+        
+        for(Columna columna : this.tabla){
+            int i = 0;
+            for(Object celda : columna.getColumna()){
+                if (celda == null){
+                    if (columna.getTipoDato() == "Numerica"){
+                        columna.modificarDato(i, nuevoValor);
+                    }
+                }
+                i++;
+            }
+        }
+    }  
+
+    public void imputarNA(boolean nuevoValor){
+        
+        for(Columna columna : this.tabla){
+            int i = 0;
+            for(Object celda : columna.getColumna()){
+                if (celda == null){
+                    if (columna.getTipoDato() == "Booleana"){
+                        columna.modificarDato(i, nuevoValor);
+                    }
+                }
+                i++;
+            }
+        }
+    }  
+
+    public void imputarNA(Map<String, Object> valores){
+        for (Map.Entry<String, Object> entry : valores.entrySet()) {
+            String encabezado = entry.getKey();
+            Object nuevoValor = entry.getValue(); 
+            List encabezados = this.getEncabezados();
+            if(encabezados.isEmpty()){
+                throw new EncabezadosException("La tabla no tiene encabezados");
+            }
+            else if(encabezados.contains(encabezado)){
+                Columna columna = getColumna(encabezado);
+                int i = 0;
+                for(Object celda : columna.getColumna()){
+                    if (celda == null){
+                        if ((columna.getTipoDato() == "Numerica" && nuevoValor instanceof Number) || 
+                            (columna.getTipoDato() == "String" && nuevoValor instanceof String) || 
+                            (columna.getTipoDato() == "Booleana" && nuevoValor instanceof Boolean)) {
+                            columna.modificarDato(i, nuevoValor);
+                        }
+                        else{
+                            throw new TipoDatoException("Tipo de dato incompatible");
+                        }
+                    }
+                    i++;
+                }
+            }
+            else{
+                System.out.println("El encabezado " + encabezado + " no se encuentra en la tabla");
+            }
         }
     }
 }
