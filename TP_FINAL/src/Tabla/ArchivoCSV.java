@@ -10,7 +10,6 @@ import java.util.List;
 
 import Tabla.Columna.Columna;
 import Tabla.Columna.ColumnaBooleana;
-import Tabla.Columna.ColumnaCadena;
 import Tabla.Columna.ColumnaNumerica;
 
 
