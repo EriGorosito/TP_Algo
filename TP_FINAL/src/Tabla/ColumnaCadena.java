@@ -2,6 +2,8 @@ package Tabla;
 
 import java.util.ArrayList;
 
+import Tabla.Columna.Columna;
+
 public class ColumnaCadena extends Columna<String>{
 
     public ColumnaCadena(String encabezado) {

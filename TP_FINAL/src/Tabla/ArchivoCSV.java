@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import Tabla.Columna.Columna;
+import Tabla.Columna.ColumnaBooleana;
+import Tabla.Columna.ColumnaNumerica;
+
 
 public class ArchivoCSV{
 //     public void cargarCSV(Tabla tabla, String rutaArchivo, String delimitador, boolean tieneEncabezado) {
