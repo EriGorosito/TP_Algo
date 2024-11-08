@@ -1,4 +1,4 @@
-import Tabla.Tabla;
+import Tabla.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,9 @@ public class App {
         // tabla.cargarCSV(rutaArchivo);
         // tabla.infoTabla();
         // // tabla.imprimirTabla();
-
+        //List columnita = tabla.indexColumna("age");
+        //tabla.agregarColumna("hola", columnita);
+        //System.out.println(tabla);
         // List<Object> fila = tabla.indexFila("1"); // Accede a la fila con etiqueta
         // "1"
         // System.out.println("Fila 1: " + fila);
