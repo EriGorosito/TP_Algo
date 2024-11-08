@@ -55,12 +55,12 @@ public class Prueba_sec_lineal {
         tablaDesdeLista.muestreo(2).imprimirTabla();
         System.out.println(tablaDesdeLista);
 
-        //Sseleccion NO FUNCIONA BIEN EL IMPRIMIR TABLA
+        //Sseleccion 
         Tabla tabla_seleccion = tablaDesdeLista.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna 1"));
         tabla_seleccion.imprimirTabla();
         System.out.println(tabla_seleccion);
 
-        //ESTA MAL HECHO TAIL
+        //tail head
         Tabla head = tablaDesdeLista.head(1);
         Tabla tail = tablaDesdeLista.tail(2);
         System.out.println(head);
@@ -80,6 +80,10 @@ public class Prueba_sec_lineal {
         tablaConcatenada.info();
         tablaDesdeLista.info();
 
+        //filtro
+        
+        
+        
 
         
     }

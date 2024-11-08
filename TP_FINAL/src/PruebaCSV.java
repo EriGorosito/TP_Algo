@@ -10,7 +10,7 @@ public class PruebaCSV {
         Tabla tabla = new Tabla(rutaArchivo, true, ",");
         Tabla tabla2 = new Tabla(rutaArchivo, true, ",");
         
-        tabla.info();
+        //tabla.info();
 
         // Tabla tablita = tabla.eliminarFilaPorEtiqueta("1");
         // System.out.println(tabla);
@@ -66,6 +66,9 @@ public class PruebaCSV {
         // Tabla tablaConcatenada = Tabla.concatenarTablas(tabla, tabla2);
         // tablaConcatenada.info();
         // tabla.info();
+        Tabla tablaFiltrada = tabla.filtrar("age", '>', 40);
+        System.out.println(tablaFiltrada);
+
 
     }
 }

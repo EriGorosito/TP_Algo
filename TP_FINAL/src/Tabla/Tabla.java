@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.Collections;
 
 import Tabla.excepciones.*;
 
@@ -512,82 +516,76 @@ public class Tabla {
         return nuevaTabla;
     }
 
-    public Tabla filtrar(String filtro) {
-        Tabla tablaFiltrada = new Tabla();
-        tablaFiltrada.setColumnas(this.tabla);
+    
+    public Tabla filtrar( String columna, char operador, Object valor){
+        Map<Character, Predicate<Object>> operadores = new HashMap<>();
+        operadores.put('<', e -> comparar(e, valor) < 0);
+        operadores.put('>', e -> comparar(e, valor) > 0);
+        operadores.put('=', e -> comparar(e, valor) == 0);
+        operadores.put('!', e -> comparar(e, valor) != 0);
 
-        for (int i = 0; i < getNumeroFilas(); i++) {
-            if (evaluarFiltro(filtro, i)) {
-                tablaFiltrada.agregarFila(obtenerFila(i).toArray());
+        Predicate<Object> condicion = operadores.get(operador);
+        
+        Tabla matrizFiltrada = copiaIndependiente();
+
+        if(condicion == null){
+            throw new IllegalArgumentException("Operador no válido. Los operaadores válidos son '<', '>', '=', '!'");
+        }
+        // for(Map.Entry<String, Integer> entrada : etiquetasFilas.entrySet()){
+
+        //     Object valorAComparar = indexCelda(entrada.getKey(), columna);
+        //     if(!condicion.test(valorAComparar)){
+                
+        //         System.out.println(entrada.getKey());
+        //         System.out.println(etiquetasFilas);
+        //         matrizFiltrada.eliminarFilaPorEtiqueta(entrada.getKey());
+        //     }
+        // }
+
+        Set<String> clavesCopia = new HashSet<>(etiquetasFilas.keySet());
+
+        for (String clave : clavesCopia) {
+            Object valorAComparar = indexCelda(clave, columna);
+
+            if (!condicion.test(valorAComparar)) {
+                
+                System.out.println(clave);
+                System.out.println(etiquetasFilas.size());
+             
+                if (!etiquetasFilas.containsKey(clave)) {
+                    throw new EtiquetaFilaException("Etiqueta de fila no encontrada: " + clave);
+                }
+
+                matrizFiltrada.eliminarFilaPorEtiqueta(clave);
+        }
+}
+        return matrizFiltrada;
+
+        
+    }
+
+    private int comparar(Object valor1, Object valor2) {
+        System.out.println(valor1);
+        System.out.println(valor2);
+        if (valor1 instanceof Boolean && valor2 instanceof Boolean) {
+            return Boolean.compare((Boolean) valor1, (Boolean) valor2);
+        }
+        if (valor1 instanceof Comparable && valor2 instanceof Comparable) {               
+            if (valor1 instanceof Number && valor2 instanceof Number) {
+                // Convertir ambos valores a Double para la comparación
+                Double valor1Double = ((Number) valor1).doubleValue();
+                Double valor2Double = ((Number) valor2).doubleValue();
+                return valor1Double.compareTo(valor2Double);
+            } else {
+                // Si los valores son comparables pero no numéricos, compararlos normalmente
+                return ((Comparable) valor1).compareTo(valor2);
             }
-        }
-
-        return tablaFiltrada;
-    }
-
-    private boolean evaluarFiltro(String filtro, int filaIndex) {
-        String[] condiciones = filtro.split("and|or|not");
-        List<String> operadores = obtenerOperadores(filtro);
-
-        boolean resultado = evaluarCondicion(condiciones[0].trim(), filaIndex);
-        for (int i = 1; i < condiciones.length; i++) {
-            boolean condicionEvaluada = evaluarCondicion(condiciones[i], filaIndex);
-            String operador = operadores.get(i - 1);
-
-            if (operador.equals("and")) {
-                resultado = resultado && condicionEvaluada;
-            } else if (operador.equals("or")) {
-                resultado = resultado || condicionEvaluada;
-            } else if (operador.equals("not")) {
-                resultado = !resultado;
-            }
-        }
-        return resultado;
-    }
-
-    private boolean evaluarCondicion(String filtro, int filaIndex) {
-        String[] partes = filtro.split(" ");
-        String columna = partes[0];
-        String operador = partes[1];
-        String condicion = partes[2];
-
-        Object valorCelda = obtenerValorColumna(filaIndex, columna);
-
-        switch (operador) {
-            case "=":
-                return valorCelda.toString().equals(condicion);
-            case "<":
-                return Double.parseDouble(valorCelda.toString()) < Double.parseDouble(condicion);
-            case ">":
-                return Double.parseDouble(valorCelda.toString()) > Double.parseDouble(condicion);
-            default:
-                return false;
+        } else {
+            throw new IllegalArgumentException("Los valores no son comparables.");
         }
     }
+   
 
-    private Object obtenerValorColumna(int filaIndex, String columna) {
-        for (Columna<?> col : tabla) {
-            System.out.println(col.getEncabezado());
-            System.out.println(columna);
-
-            if (col.getEncabezado().equals(columna)) {
-                return col.getCelda(filaIndex);
-            }
-        }
-        throw new ColumnaNoEncontrada("Columna no encontrada: " + columna);
-    }
-
-    private List<String> obtenerOperadores(String filtro) {
-        List<String> operadores = new ArrayList<>();
-        String[] partes = filtro.split(" ");
-
-        for (String parte : partes) {
-            if (parte.equals("and") || parte.equals("or") || parte.equals("not")) {
-                operadores.add(parte);
-            }
-        }
-        return operadores;
-    }
 
     public void setColumnas(List<Columna<?>> columnas) {
         this.tabla = new ArrayList<>(columnas);
