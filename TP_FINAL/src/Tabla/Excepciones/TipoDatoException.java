@@ -1,4 +1,4 @@
-package Tabla.excepciones;
+package Tabla.Excepciones;
 
 public class TipoDatoException extends RuntimeException{
     public TipoDatoException(String mensaje){
