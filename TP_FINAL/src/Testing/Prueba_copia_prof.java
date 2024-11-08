@@ -1,10 +1,13 @@
-import Tabla.ColumnaBooleana;
-import Tabla.ColumnaCadena;
-import Tabla.ColumnaNumerica;
+package Testing;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import Tabla.ColumnaCadena;
 import Tabla.Tabla;
+import Tabla.Columna.ColumnaBooleana;
+import Tabla.Columna.ColumnaNumerica;
 
 public class Prueba_copia_prof {
 
