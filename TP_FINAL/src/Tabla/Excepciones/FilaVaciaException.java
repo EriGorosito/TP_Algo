@@ -1,4 +1,4 @@
-package Tabla.excepciones;
+package Tabla.Excepciones;
 
 public class FilaVaciaException extends RuntimeException {
     public FilaVaciaException(String mensaje) {

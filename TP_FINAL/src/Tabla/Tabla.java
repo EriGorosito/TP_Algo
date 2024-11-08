@@ -15,7 +15,7 @@ import javax.xml.bind.TypeConstraintException;
 import Tabla.Columna.Columna;
 import Tabla.Columna.ColumnaBooleana;
 import Tabla.Columna.ColumnaNumerica;
-import Tabla.excepciones.*;
+import Tabla.Excepciones.*;
 
 public class Tabla {
     private List<Columna<?>> tabla;
