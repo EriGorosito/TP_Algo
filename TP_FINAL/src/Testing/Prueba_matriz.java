@@ -15,7 +15,7 @@ public class Prueba_matriz {
 
         Tabla tablaDesdeMatriz = new Tabla(datos);
         tablaDesdeMatriz.imprimirTabla();
-        
+         
          //Acceso indexado
         List<Object> fila = tablaDesdeMatriz.indexFila("1");  // Accede a la fila con etiqueta "1"
         System.out.println("Fila 1: " + fila);
@@ -32,7 +32,7 @@ public class Prueba_matriz {
         tablaDesdeMatriz.eliminarFilaPorEtiqueta("1");
         System.out.println(tablaDesdeMatriz);
 
-        Tabla copia = tablaDesdeMatriz.copiaIndependiente();
+        Tabla copia = tablaDesdeMatriz.copiaProfunda();
         System.out.println(copia);
 
         //descargar a csv
@@ -43,7 +43,7 @@ public class Prueba_matriz {
 
         // Ordenamiento NO ANDA 
         List<String> l = new ArrayList<>();
-        l.add("Columna0");
+        l.add("Columna1");
         tablaDesdeMatriz.ordenarFilas(l, false).imprimirTabla();
          
 
@@ -54,10 +54,10 @@ public class Prueba_matriz {
         //Seleccion 
 
         Tabla tabla_seleccion = tablaDesdeMatriz.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna1"));
-        tabla_seleccion.imprimirTabla();
+        //tabla_seleccion.imprimirTabla();
         System.out.println(tabla_seleccion);
 
-        
+         
         Tabla head = tablaDesdeMatriz.head(1);
         Tabla tail = tablaDesdeMatriz.tail(2);
         System.out.println(head);
@@ -76,6 +76,7 @@ public class Prueba_matriz {
         Tabla tablaConcatenada = Tabla.concatenarTablas(tablaDesdeMatriz, tabla2);
         tablaConcatenada.info();
         tablaDesdeMatriz.info();
+
     }
     
 }

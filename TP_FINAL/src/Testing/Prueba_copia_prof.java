@@ -66,7 +66,7 @@ public class Prueba_copia_prof {
          //eliminar filatablaCopia.eliminarFilaPorEtiqueta("0");
          System.out.println(tablaCopia);
  
-         Tabla copia = tablaCopia.copiaIndependiente();
+         Tabla copia = tablaCopia.copiaProfunda();
          System.out.println(copia);
  
          //descargar a csv
