@@ -1,6 +1,7 @@
 package Testing;
 import Tabla.Tabla;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -11,7 +12,7 @@ public class PruebaCSV {
         Tabla tabla = new Tabla(rutaArchivo, true, ",");
         Tabla tabla2 = new Tabla(rutaArchivo, true, ",");
         
-        tabla.info();
+        //tabla.info();
 
         // Tabla tablita = tabla.eliminarFilaPorEtiqueta("1");
         // System.out.println(tabla);
@@ -67,6 +68,20 @@ public class PruebaCSV {
         // Tabla tablaConcatenada = Tabla.concatenarTablas(tabla, tabla2);
         // tablaConcatenada.info();
         // tabla.info();
+
+        List<String> columnas = List.of("age", "region");
+        List<Predicate<Object>> predicados = List.of(
+            valor -> (Double) valor > 30,   
+            //valor -> (Double) valor >20
+
+            //valor -> (Boolean) valor.equals(true)
+            valor -> valor.equals("northwest".trim())
+        );
+        String operadorLogico = "AND";
+
+        Tabla tablaFiltrada = tabla.filtrar(columnas, predicados, operadorLogico);
+        tablaFiltrada.info();
+        
 
     }
 }

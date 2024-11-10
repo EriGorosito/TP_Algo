@@ -3,6 +3,7 @@ package Testing;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 import Tabla.ColumnaCadena;
 import Tabla.Tabla;
@@ -34,69 +35,82 @@ public class Prueba_copia_prof {
         // Crear una copia profunda de la tabla
         Tabla tablaCopia = new Tabla(tablaOriginal);
 
-        // Imprimir la tabla copiada
-        System.out.println("\nTabla Copiada:");
-        tablaCopia.imprimirTabla();
+        // // Imprimir la tabla copiada
+        // System.out.println("\nTabla Copiada:");
+        // tablaCopia.imprimirTabla();
 
-        // Modificar la tabla original para verificar que la copia no cambia
-        colNumerica.agregarDato(30);
-        colCadena.agregarDato("Prueba");
-        colBooleana.agregarDato(true);
+        // // Modificar la tabla original para verificar que la copia no cambia
+        // colNumerica.agregarDato(30);
+        // colCadena.agregarDato("Prueba");
+        // colBooleana.agregarDato(true);
 
-        // Imprimir ambas tablas para verificar la independencia
-        System.out.println("\nTabla Original después de modificaciones:");
-        tablaOriginal.imprimirTabla();
+        // // Imprimir ambas tablas para verificar la independencia
+        // System.out.println("\nTabla Original después de modificaciones:");
+        // tablaOriginal.imprimirTabla();
 
-        System.out.println("\nTabla Copiada después de modificaciones en la original:");
-        tablaCopia.imprimirTabla();
+        // System.out.println("\nTabla Copiada después de modificaciones en la original:");
+        // tablaCopia.imprimirTabla();
 /////
  
-         //Acceso indexado
-         List<Object> fila = tablaCopia.indexFila("1");  // Accede a la fila con etiqueta "1"
-         System.out.println("Fila 1: " + fila);
+        //  //Acceso indexado
+        //  List<Object> fila = tablaCopia.indexFila("1");  // Accede a la fila con etiqueta "1"
+        //  System.out.println("Fila 1: " + fila);
  
-         // Acceso a una columna completa
-         List<Object> columna = tablaCopia.indexColumna("Columna Numerica");  // Accede a la columna "Nombre"
-         System.out.println("Columna 'Columna 1': " + columna);
+        //  // Acceso a una columna completa
+        //  List<Object> columna = tablaCopia.indexColumna("Columna Numerica");  // Accede a la columna "Nombre"
+        //  System.out.println("Columna 'Columna 1': " + columna);
  
-         // Acceso a una celda específica
-         Object celda = tablaCopia.indexCelda("1", "Columna Numerica");  // Accede a la celda en fila "1" y columna "Nombre"
-         System.out.println("Celda en (1, Columna Numerica): " + celda);
+        //  // Acceso a una celda específica
+        //  Object celda = tablaCopia.indexCelda("1", "Columna Numerica");  // Accede a la celda en fila "1" y columna "Nombre"
+        //  System.out.println("Celda en (1, Columna Numerica): " + celda);
  
-         //eliminar filatablaCopia.eliminarFilaPorEtiqueta("0");
-         System.out.println(tablaCopia);
+        //  //eliminar filatablaCopia.eliminarFilaPorEtiqueta("0");
+        //  System.out.println(tablaCopia);
  
-         Tabla copia = tablaCopia.copiaProfunda();
-         System.out.println(copia);
+        //  Tabla copia = tablaCopia.copiaProfunda();
+        //  System.out.println(copia);
  
-         //descargar a csv
-         String descarga_rutaArchivo = "tabla_salida3.csv";
-         tablaCopia.descargarACSV(descarga_rutaArchivo);
+        //  //descargar a csv
+        //  String descarga_rutaArchivo = "tabla_salida3.csv";
+        //  tablaCopia.descargarACSV(descarga_rutaArchivo);
  
-         // Ordenamiento NO ANDA 
-         List<String> l = new ArrayList<>();
-         l.add("Columna Numerica");
-         tablaCopia.ordenarFilas(l, true).imprimirTabla();
+        //  // Ordenamiento NO ANDA 
+        //  List<String> l = new ArrayList<>();
+        //  l.add("Columna Numerica");
+        //  tablaCopia.ordenarFilas(l, true).imprimirTabla();
          
  
-         // Muestreo
-         tablaCopia.muestreo(1).imprimirTabla();
-         System.out.println(tablaCopia);
+        //  // Muestreo
+        //  tablaCopia.muestreo(1).imprimirTabla();
+        //  System.out.println(tablaCopia);
  
-         //Seleccion NO FUNCIONA BIEN EL IMPRIMIR TABLA
-         Tabla tabla_seleccion = tablaCopia.seleccionar(Arrays.asList("1"), Arrays.asList("Columna Numerica"));
-         tabla_seleccion.imprimirTabla();
-         System.out.println(tabla_seleccion);
+        //  //Seleccion NO FUNCIONA BIEN EL IMPRIMIR TABLA
+        //  Tabla tabla_seleccion = tablaCopia.seleccionar(Arrays.asList("1"), Arrays.asList("Columna Numerica"));
+        //  tabla_seleccion.imprimirTabla();
+        //  System.out.println(tabla_seleccion);
  
-         //ESTA MAL HECHO TAIL
-         Tabla head = tablaCopia.head(1);
-         Tabla tail = tablaCopia.tail(1);
-         System.out.println(head);
-         System.out.println(tail);
+        //  //ESTA MAL HECHO TAIL
+        //  Tabla head = tablaCopia.head(1);
+        //  Tabla tail = tablaCopia.tail(1);
+        //  System.out.println(head);
+        //  System.out.println(tail);
 
-        //concatenar
-        Tabla tablaConcatenada = Tabla.concatenarTablas(tablaOriginal, tablaCopia);
-        tablaConcatenada.info();
-        tablaOriginal.info();
+        // //concatenar
+        // Tabla tablaConcatenada = Tabla.concatenarTablas(tablaOriginal, tablaCopia);
+        // tablaConcatenada.info();
+        // tablaOriginal.info();
+
+        List<String> columnas = List.of("Columna Numerica", "Columna Cadena");
+        List<Predicate<Object>> predicados = List.of(
+            valor -> (Double) valor > 30,   
+            //valor -> (Double) valor >20
+
+            //valor -> (Boolean) valor.equals(true)
+            valor -> valor.equals("Hola".trim())
+        );
+        String operadorLogico = "OR";
+
+        Tabla tablaFiltrada = tablaCopia.filtrar(columnas, predicados, operadorLogico);
+        tablaFiltrada.info();
     }
 }
