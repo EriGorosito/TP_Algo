@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Predicate;
 
 //import javax.xml.bind.TypeConstraintException;
@@ -255,9 +257,9 @@ public class Tabla {
         this.agregarColumna(nuevaColumna);
     }
 
-    public Tabla filtrar(List<String> col, List<Predicate<?>> cond, String conector) {
-        return new Tabla(); 
-    }
+    // public Tabla filtrar(List<String> col, List<Predicate<?>> cond, String conector) {
+    //     return new Tabla(); 
+    // }
 
     public void agregarFila(Object... valores) {
         if (valores.length != tabla.size()) {
@@ -324,6 +326,15 @@ public class Tabla {
             tipodeDatos.put(encabezado, tipoDato);
         }
         return tipodeDatos;
+    }
+
+    public String getEtiquetaFila(int indice) {
+        for (Map.Entry<String, Integer> entry : etiquetasFilas.entrySet()) {
+            if (entry.getValue() == indice) {
+                return entry.getKey();
+            }
+        }
+        return null; // Devuelve null si no encuentra la etiqueta
     }
 
     public void info() {
@@ -835,4 +846,73 @@ public class Tabla {
             }
         }
     }
+
+
+
+    public Tabla filtrar(List<String> columnasFiltrar, List<Predicate<Object>> predicados, String operadoresLogicos) {
+        List<Object[]> filasFiltradas = new ArrayList<>();
+        
+        // Validar el operador lógico
+        if (!operadoresLogicos.equalsIgnoreCase("AND") && !operadoresLogicos.equalsIgnoreCase("OR")) {
+            throw new IllegalArgumentException("Operador lógico no válido: " + operadoresLogicos);
+        }
+        
+        // Iterar por cada fila de la tabla actual
+        for (int i = 0; i < this.getNumeroFilas(); i++) {
+            boolean resultado = operadoresLogicos.equalsIgnoreCase("AND");
+            boolean filaCumple = false; // variable que indica si la fila cumple con las condiciones
+            
+            // Evaluar cada predicado en la fila
+            for (int j = 0; j < columnasFiltrar.size(); j++) {
+                String nombreColumna = columnasFiltrar.get(j);
+                Predicate<Object> predicado = predicados.get(j);
+                String etiquetaFila = getEtiquetaFila(i);
+                if (etiquetaFila == null) {
+                    throw new IllegalArgumentException("No se encontró la etiqueta para la fila con índice: " + i);
+                }
+                Object valor = indexCelda(etiquetaFila, nombreColumna);
+    
+                if (valor == null) {
+                    continue; // Si no hay valor, saltamos a la siguiente columna
+                }
+    
+                boolean cumpleCondicion;
+                if (valor instanceof Integer) {
+                    cumpleCondicion = predicado.test((Integer) valor);
+                } else if (valor instanceof Double) {
+                    cumpleCondicion = predicado.test((Double) valor);
+                } else {
+                    cumpleCondicion = predicado.test(valor);
+                }
+    
+                // Si el operador es AND, debemos asegurarnos que todas las condiciones se cumplan
+                if (operadoresLogicos.equalsIgnoreCase("AND")) {
+                    if (!cumpleCondicion) {
+                        resultado = false; // Si alguna condición no cumple, la fila no pasa
+                        break; // No es necesario seguir evaluando
+                    }
+                }
+                // Si el operador es OR, basta que una condición sea verdadera para que la fila pase
+                else if (operadoresLogicos.equalsIgnoreCase("OR")) {
+                    if (cumpleCondicion) {
+                        filaCumple = true; // Al menos una columna cumple, la fila es válida
+                        break; // No es necesario seguir evaluando
+                    }
+                }
+            }
+    
+            // Si la fila cumple con todas las condiciones (según AND u OR), agregarla a las filas filtradas
+            if ((operadoresLogicos.equalsIgnoreCase("AND") && resultado) || (operadoresLogicos.equalsIgnoreCase("OR") && filaCumple)) {
+                filasFiltradas.add(obtenerFila(i).toArray());
+            }
+        }
+    
+        // Verificar si se encontraron filas filtradas
+        if (filasFiltradas.isEmpty()) {
+            throw new FilaVaciaException("No se encontraron filas que cumplan con los criterios de filtrado.");
+        }
+        
+        // Crear una nueva tabla usando el constructor existente con `List<Object[]>`
+        return new Tabla(filasFiltradas);
+}
 }
