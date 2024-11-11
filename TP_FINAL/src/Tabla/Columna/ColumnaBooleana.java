@@ -1,6 +1,7 @@
 package Tabla.Columna;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ColumnaBooleana extends Columna<Boolean>{
     public ColumnaBooleana(String encabezado) {
@@ -51,4 +52,20 @@ public class ColumnaBooleana extends Columna<Boolean>{
         
         this.columna.set(indice,(Boolean) nuevoValor);
     }
+
+    @Override
+    public boolean equals(Object otro) {
+    if (this == otro) {
+        return true;
+    }
+
+    if (otro == null || this.getClass() != otro.getClass()) {
+        return false;
+    }
+
+    Columna otro2 = (ColumnaBooleana) otro; 
+    return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
+    }
+
+    
 }
