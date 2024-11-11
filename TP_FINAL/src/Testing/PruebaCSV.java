@@ -1,4 +1,5 @@
 package Testing;
+import Tabla.OperadorLogico;
 import Tabla.Tabla;
 import java.util.List;
 import java.util.function.Predicate;
@@ -77,9 +78,9 @@ public class PruebaCSV {
             //valor -> (Boolean) valor.equals(true)
             valor -> valor.equals("northwest".trim())
         );
-        String operadorLogico = "AND";
+        
 
-        Tabla tablaFiltrada = tabla.filtrar(columnas, predicados, operadorLogico);
+        Tabla tablaFiltrada = tabla.filtrar(columnas, predicados, OperadorLogico.OR);
         tablaFiltrada.info();
         
 

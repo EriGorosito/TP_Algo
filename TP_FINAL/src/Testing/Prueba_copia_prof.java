@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import Tabla.ColumnaCadena;
+import Tabla.OperadorLogico;
 import Tabla.Tabla;
 import Tabla.Columna.ColumnaBooleana;
 import Tabla.Columna.ColumnaNumerica;
@@ -16,6 +17,7 @@ public class Prueba_copia_prof {
         
         //Crear la tabla original y agregar columnas
         Tabla tablaOriginal = new Tabla();
+        
         ColumnaNumerica colNumerica = new ColumnaNumerica("Columna Numerica");
         colNumerica.agregarDato(50);
         colNumerica.agregarDato(100);
@@ -32,6 +34,7 @@ public class Prueba_copia_prof {
         tablaOriginal.agregarColumna(colCadena);
         tablaOriginal.agregarColumna(colBooleana);
 
+      
         // Crear una copia profunda de la tabla
         Tabla tablaCopia = new Tabla(tablaOriginal);
 
@@ -102,15 +105,15 @@ public class Prueba_copia_prof {
 
         List<String> columnas = List.of("Columna Numerica", "Columna Cadena");
         List<Predicate<Object>> predicados = List.of(
-            valor -> (Double) valor > 30,   
+            valor -> (Integer) valor > 30,   
             //valor -> (Double) valor >20
 
             //valor -> (Boolean) valor.equals(true)
             valor -> valor.equals("Hola".trim())
         );
-        String operadorLogico = "OR";
+        // String operadorLogico = "AND";
 
-        Tabla tablaFiltrada = tablaCopia.filtrar(columnas, predicados, operadorLogico);
+        Tabla tablaFiltrada = tablaCopia.filtrar(columnas, predicados, OperadorLogico.AND);
         tablaFiltrada.info();
     }
 }
