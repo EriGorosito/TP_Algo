@@ -17,6 +17,7 @@ public class Prueba_matriz {
 
         Tabla tablaDesdeMatriz = new Tabla(datos);
         tablaDesdeMatriz.imprimirTabla();
+    
          
         //  //Acceso indexado
         // List<Object> fila = tablaDesdeMatriz.indexFila("1");  // Accede a la fila con etiqueta "1"
