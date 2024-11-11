@@ -142,7 +142,7 @@ public class ArchivoCSV{
             }
 
             // Escribir datos fila por fila
-            for (int i = 0; i < tabla.getNumeroFilas(); i++) { // Recorre cada fila
+            for (int i = 0; i < tabla.getCantFilas(); i++) { // Recorre cada fila
                 for (int j = 0; j < tabla.getCantColumna(); j++) { // Recorre cada columna
                     Columna<?> columna = tabla.getColumna(j);
                     Object celda = columna.getCelda(i);

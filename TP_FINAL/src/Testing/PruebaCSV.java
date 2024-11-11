@@ -70,18 +70,19 @@ public class PruebaCSV {
         // tablaConcatenada.info();
         // tabla.info();
 
-        List<String> columnas = List.of("age", "region");
-        List<Predicate<Object>> predicados = List.of(
-            valor -> (Double) valor > 30,   
-            //valor -> (Double) valor >20
+        // List<String> columnas = List.of("age", "region");
+        // List<Predicate<Object>> predicados = List.of(
+        //     valor -> (Double) valor > 30,   
+        //     //valor -> (Double) valor >20
 
-            //valor -> (Boolean) valor.equals(true)
-            valor -> valor.equals("northwest".trim())
-        );
+        //     //valor -> (Boolean) valor.equals(true)
+        //     valor -> valor.equals("northwest".trim())
+        // );
         
 
-        Tabla tablaFiltrada = tabla.filtrar(columnas, predicados, OperadorLogico.OR);
-        tablaFiltrada.info();
+        // Tabla tablaFiltrada = tabla.filtrar(columnas, predicados, OperadorLogico.OR);
+        // tablaFiltrada.info();
+        
         
 
     }

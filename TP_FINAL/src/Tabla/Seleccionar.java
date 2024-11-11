@@ -30,7 +30,7 @@ public class Seleccionar {
         }
 
         if (etiquetasFilas == null || etiquetasFilas.isEmpty()) {
-            for (int i = 0; i < tabla.getNumeroFilas(); i++) {
+            for (int i = 0; i < tabla.getCantFilas(); i++) {
                 List<Object> nuevaFila = new ArrayList<>();
                 for (int indiceColumna : indicesColumnas) {
                     nuevaFila.add(tabla.getColumna(indiceColumna).getCelda(i));
@@ -56,7 +56,7 @@ public class Seleccionar {
     public static Tabla head(Tabla tabla, int cantidad) {
         Tabla nuevaTabla = new Tabla();
 
-        if (cantidad > tabla.getNumeroFilas()) {
+        if (cantidad > tabla.getCantFilas()) {
             throw new FilasRangoException("Cantidad de filas fuera de rango");
         }
 
@@ -83,13 +83,13 @@ public class Seleccionar {
         public static Tabla tail(Tabla tabla, int cantidad) {
             Tabla nuevaTabla = new Tabla();
     
-            if (cantidad > tabla.getNumeroFilas()) {
+            if (cantidad > tabla.getCantFilas()) {
                 throw new FilasRangoException("Cantidad de filas fuera de rango");
             }
             for(int i = 0; i < tabla.getCantColumna(); i++){
                 nuevaTabla.agregarColumna(tabla.getColumna(i).copia());
             }
-            for (int i = tabla.getNumeroFilas() - cantidad; i < tabla.getNumeroFilas(); i++) {
+            for (int i = tabla.getCantFilas() - cantidad; i < tabla.getCantFilas(); i++) {
                 List<Object> fila = new ArrayList<>();
                 for(int j = 0; j < tabla.getCantColumna(); j++){
                     fila.add(tabla.getColumna(j).getCelda(i));
