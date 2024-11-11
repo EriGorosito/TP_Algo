@@ -1,6 +1,7 @@
 package Tabla.Columna;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ColumnaNumerica extends Columna<Number>{
 
@@ -52,5 +53,19 @@ public class ColumnaNumerica extends Columna<Number>{
     @Override
     public void modificarDato(int indice, Object nuevoValor) {
         this.columna.set(indice, (Number) nuevoValor);
+    }
+
+    @Override
+    public boolean equals(Object otro) {
+    if (this == otro) {
+        return true;
+    }
+
+    if (otro == null || this.getClass() != otro.getClass()) {
+        return false;
+    }
+
+    Columna otro2 = (ColumnaNumerica) otro; 
+    return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
     }
 }

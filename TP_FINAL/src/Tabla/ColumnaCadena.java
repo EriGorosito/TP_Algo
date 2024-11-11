@@ -1,8 +1,10 @@
 package Tabla;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import Tabla.Columna.Columna;
+import Tabla.Columna.ColumnaBooleana;
 
 public class ColumnaCadena extends Columna<String>{
 
@@ -55,4 +57,17 @@ public class ColumnaCadena extends Columna<String>{
         this.columna.set(indice, nuevoValor.toString());
     }
 
+        @Override
+    public boolean equals(Object otro) {
+    if (this == otro) {
+        return true;
+    }
+
+    if (otro == null || this.getClass() != otro.getClass()) {
+        return false;
+    }
+
+    Columna otro2 = (ColumnaCadena) otro; 
+    return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
+    }
 }

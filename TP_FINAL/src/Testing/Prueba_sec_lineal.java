@@ -12,13 +12,13 @@ public class Prueba_sec_lineal {
 
     public static void main(String[] args) {
     // //PARA CONTRUCTOR SECUENCIA LINEAL
-    //     List<Object[]> filas = new ArrayList<>();
-    //     filas.add(new Object[]{10, "Hola", true});
-    //     filas.add(new Object[]{20, "Mundo", false});
-    //     filas.add(new Object[]{30, "Java", true});
+        List<Object[]> filas = new ArrayList<>();
+        filas.add(new Object[]{10, "Hola", true});
+        filas.add(new Object[]{20, "Mundo", false});
+        filas.add(new Object[]{30, "Java", true});
 
-    //     // Crear una tabla a partir de la lista de filas
-    //     Tabla tablaDesdeLista = new Tabla(filas);
+        // Crear una tabla a partir de la lista de filas
+        Tabla tablaDesdeLista = new Tabla(filas);
 
     //     // Imprimir la tabla
     //     // tablaDesdeLista.imprimirTabla();
@@ -70,19 +70,19 @@ public class Prueba_sec_lineal {
     //     // System.out.println(head);
     //     // System.out.println(tail);
 
-    //     // //concatenar
-    //     // List<Object[]> otrasfilas = new ArrayList<>();
-    //     // otrasfilas.add(new Object[]{13, "grupo", true});
-    //     // otrasfilas.add(new Object[]{24, "numero", false});
-    //     // otrasfilas.add(new Object[]{70, "10", true});
+        //concatenar
+        List<Object[]> otrasfilas = new ArrayList<>();
+        otrasfilas.add(new Object[]{13, "grupo", true});
+        otrasfilas.add(new Object[]{24, "numero", false});
+        otrasfilas.add(new Object[]{70, "10", true});
 
-    //     // // Crear una tabla a partir de la lista de filas
-    //     // Tabla tabla2 = new Tabla(otrasfilas);
+        // Crear una tabla a partir de la lista de filas
+        Tabla tabla2 = new Tabla(otrasfilas);
 
     
-    //     // Tabla tablaConcatenada = Tabla.concatenarTablas(tablaDesdeLista, tabla2);
-    //     // tablaConcatenada.info();
-    //     // tablaDesdeLista.info();
+        Tabla tablaConcatenada = Tabla.concatenarTablas(tablaDesdeLista, tabla2);
+        tablaConcatenada.info();
+        tablaDesdeLista.info();
 
     //      List<String> columnas = List.of("Columna 1", "Columna 2");
     //     List<Predicate<Object>> predicados = List.of(

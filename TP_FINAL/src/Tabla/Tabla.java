@@ -135,11 +135,11 @@ public class Tabla {
  
             // Crear la columna según el tipo dominante
             if (esNumerico) {
-                tabla.add(new ColumnaNumerica("Columna " + (col + 1)));
+                tabla.add(new ColumnaNumerica("Columna" + (col + 1)));
             } else if (esBooleano) {
-                tabla.add(new ColumnaBooleana("Columna " + (col + 1)));
+                tabla.add(new ColumnaBooleana("Columna" + (col + 1)));
             } else {
-                tabla.add(new ColumnaCadena("Columna " + (col + 1)));
+                tabla.add(new ColumnaCadena("Columna" + (col + 1)));
             }
         }
  
@@ -151,10 +151,18 @@ public class Tabla {
     }
 
     private void inicializarEtiquetas() {
-        for (int i = 0; i < getCantFilas(); i++) {
-            String clave = String.valueOf(i);
-            this.etiquetasFilas.put(clave, i);
+        if(etiquetasFilas.isEmpty()){
+            for (int i = 0; i < getCantFilas(); i++) {
+                String clave = String.valueOf(i);
+                this.etiquetasFilas.put(clave, i);
+            }
+        }else{
+            for(int i = getCantFilas()-etiquetasFilas.size(); i < getCantFilas(); i++){
+                String clave = String.valueOf(i);
+                this.etiquetasFilas.put(clave, i);
+            }
         }
+        
     }
 
     public Columna<?> getColumna(int posicion) {
@@ -498,36 +506,21 @@ public class Tabla {
     //     }
 
     //     // Validación: Verificar que las columnas coincidan en tipo, orden y etiquetas
-    //     for (int i = 0; i < tabla1.tabla.size(); i++) {
-    //         Columna<?> columna1 = tabla1.tabla.get(i);
+    //     for (int i = 0; i < tabla1.getCantColumna(); i++) {
+    //         Columna<?> columna1 = tabla1.getColumna(i);
     //         Columna<?> columna2 = this.getColumna(i);
 
-    //         // Verificar tipo de datos, nombre y orden
-    //         if (!columna1.getClass().equals(columna2.getClass()) ||
-    //                 !columna1.getEncabezado().equals(columna2.getEncabezado())) {
+    //         if (!columna2.equals(columna1)) {
     //             throw new a("Las columnas no coinciden en tipo de datos, orden o etiquetas.");
     //         }
     //     }
-
-    //     // // Crear una nueva tabla para almacenar la concatenación de ambas
-    //     // Tabla tablaConcatenada = new Tabla();
-
-    //     // // Copiar columnas de tabla1 a la tabla concatenada (solo una vez, ya que ambas
-    //     // // tablas tienen las mismas columnas)
-    //     // for (Columna<?> columna : tabla1.tabla) {
-    //     //     tablaConcatenada.tabla.add(columna.copia()); // Copia profunda de la columna
-    //     // }
-
-    //     // // Agregar filas de tabla1
-    //     // for (int i = 0; i < tabla1.getCantFilas(); i++) {
-    //     //     tablaConcatenada.agregarFila(tabla1.obtenerFila(i).toArray());
-    //     // }
 
     //     Tabla tablaConcatenada = copiaProfunda();
     //     // Agregar filas de tabla2
     //     for (int i = 0; i < tabla1.getCantFilas(); i++) {
     //         tablaConcatenada.agregarFila(tabla1.obtenerFila(i).toArray());
     //     }
+    //     tablaConcatenada.inicializarEtiquetas();
     //     return tablaConcatenada;
     // }
 

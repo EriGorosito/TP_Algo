@@ -38,6 +38,9 @@ public abstract class Columna<T> {
 
     public abstract void modificarDato(int indice, Object nuevoValor);
 
+    
+    public abstract boolean equals(Object otro);
+
     @Override
     public String toString() {
         String salida = "";
