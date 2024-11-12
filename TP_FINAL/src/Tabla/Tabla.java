@@ -429,10 +429,26 @@ public class Tabla {
                         throw new EtiquetaColumnaException("Etiqueta de columna no encontrada: " + etiquetaColumna);
                     }
 
-                    Comparable valor1 = (Comparable) fila1.get(indiceColumna);
-                    Comparable valor2 = (Comparable) fila2.get(indiceColumna);
+                    // Obtener los valores de las celdas en las filas
+                    Object valor1 = fila1.get(indiceColumna);
+                    Object valor2 = fila2.get(indiceColumna);
 
-                    int comparacion = valor1.compareTo(valor2);
+                    // Si ambos son null, son iguales
+                    if (valor1 == null && valor2 == null) {
+                        continue;
+                    }
+
+                    // Si solo uno es null, consideramos el null como menor
+                    if (valor1 == null) {
+                        return ascendente ? -1 : 1; // El valor1 es null, se coloca después si es ascendente
+                    }
+                    if (valor2 == null) {
+                        return ascendente ? 1 : -1; // El valor2 es null, se coloca después si es ascendente
+                    }
+                    Comparable comparable1 = (Comparable) fila1.get(indiceColumna);
+                    Comparable comparable2 = (Comparable) fila2.get(indiceColumna);
+
+                    int comparacion = comparable1.compareTo(comparable2);
                     if (comparacion != 0) {
                         return ascendente ? comparacion : -comparacion;
                     }
@@ -601,23 +617,6 @@ public class Tabla {
     }
 
 
-    public void imprimirTabla() {
-        // ESTE METODO ES PARA QUE IMPRIMA LOS DATOS DE LA COLUMNA UNA ABAJO DE LA OTRA
-        int numFilas = getCantFilas();
-        for (int fila = 0; fila < numFilas; fila++) {
-            StringBuilder sb = new StringBuilder(); // Usamos StringBuilder para construir la línea de salida
-            // Iterar sobre cada columna
-            for (Columna<?> columna : tabla) {
-                // Obtener el valor de la celda en la fila actual
-                Object valor = columna.getCelda(fila);
-                // Agregar el valor al StringBuilder, manejando valores nulos
-                sb.append(valor != null ? valor.toString() : "NA").append(" "); // Concatenar valor y un espacio
-            }
-            // Imprimir la línea construida, eliminando el espacio extra al final
-            System.out.println(sb.toString().trim());
-
-        }
-    }
 
     public Tabla muestreo(int cantidad) {
         if (cantidad <= 0 || cantidad > getCantFilas()) {
@@ -687,7 +686,6 @@ public class Tabla {
 
     private void actualizarEtiquetas(String etiquetaFila, Integer indice){
         etiquetasFilas.remove(etiquetaFila);
-
         for (Map.Entry<String, Integer> entry : etiquetasFilas.entrySet()) {
             int currentIndice = entry.getValue();
             if (currentIndice > indice) {

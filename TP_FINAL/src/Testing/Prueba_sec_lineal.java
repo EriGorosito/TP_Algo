@@ -20,55 +20,55 @@ public class Prueba_sec_lineal {
         // Crear una tabla a partir de la lista de filas
         Tabla tablaDesdeLista = new Tabla(filas, false);
 
-    //     // Imprimir la tabla
-    //     // tablaDesdeLista.imprimirTabla();
+        //Acceso indexado
+        List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
+        System.out.println("Fila 1: " + fila);
 
-    //     //Acceso indexado
-    //     List<Object> fila = tablaDesdeLista.indexFila("1");  // Accede a la fila con etiqueta "1"
-    //     System.out.println("Fila 1: " + fila);
+        // Acceso a una columna completa
+        List<Object> columna = tablaDesdeLista.indexColumna("Columna1");  // Accede a la columna "Nombre"
+        System.out.println("Columna 'Columna 1': " + columna);
 
-    //     // Acceso a una columna completa
-    //     List<Object> columna = tablaDesdeLista.indexColumna("Columna 1");  // Accede a la columna "Nombre"
-    //     System.out.println("Columna 'Columna 1': " + columna);
+        // Acceso a una celda específica
+        Object celda = tablaDesdeLista.indexCelda("1", "Columna1");  // Accede a la celda en fila "1" y columna "Nombre"
+        System.out.println("Celda en (1, Columna 1): " + celda);
 
-    //     // Acceso a una celda específica
-    //     Object celda = tablaDesdeLista.indexCelda("1", "Columna 1");  // Accede a la celda en fila "1" y columna "Nombre"
-    //     System.out.println("Celda en (1, Columna 1): " + celda);
+        //eliminar fila
+        tablaDesdeLista.eliminarFilaPorEtiqueta("1");
+        System.out.println(tablaDesdeLista);
 
-    //     //eliminar fila
-    //     Tabla tablita = tablaDesdeLista.eliminarFilaPorEtiqueta("1");
-    //     System.out.println(tablaDesdeLista);
-    //     System.out.println(tablita);
+        //Eliminar Columna
+        tablaDesdeLista.eliminarColumna("Columna2");
+        System.out.println(tablaDesdeLista);
 
-    //     Tabla copia = tablaDesdeLista.copiaIndependiente();
-    //     System.out.println(copia);
+        //Copia profunda
+        Tabla copia = tablaDesdeLista.copiaProfunda();
+        System.out.println(copia);
 
-    //     //descargar a csv
-    //     String descarga_rutaArchivo = "tabla_salida2.csv";
-    //     tablaDesdeLista.descargarACSV(descarga_rutaArchivo);
+        //descargar a csv
+        String descarga_rutaArchivo = "tabla_salida2.csv";
+        tablaDesdeLista.descargarACSV(descarga_rutaArchivo, false, ",");
 
 
 
-    //     // // Ordenamiento NO ANDA 
-    //     // List<String> l = new ArrayList<>();
-    //     // l.add("Columna 1");
-    //     // tablaDesdeLista.ordenarFilas(l, true).imprimirTabla();
+        // Ordenamiento 
+        List<String> l = new ArrayList<>();
+        l.add("Columna1");
+        tablaDesdeLista.ordenarFilas(l, true);
         
 
-    //     // // Muestreo
-    //     // tablaDesdeLista.muestreo(2).imprimirTabla();
-    //     // System.out.println(tablaDesdeLista);
+        // Muestreo
+        tablaDesdeLista.muestreo(2);
+        System.out.println(tablaDesdeLista);
 
-    //     // //Sseleccion NO FUNCIONA BIEN EL IMPRIMIR TABLA
-    //     // Tabla tabla_seleccion = tablaDesdeLista.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna 1"));
-    //     // tabla_seleccion.imprimirTabla();
-    //     // System.out.println(tabla_seleccion);
+        //Seleccion 
+        Tabla tabla_seleccion = tablaDesdeLista.seleccionar(Arrays.asList("1", "2"), Arrays.asList("Columna1"));
+        System.out.println(tabla_seleccion);
 
-    //     // //ESTA MAL HECHO TAIL
-    //     // Tabla head = tablaDesdeLista.head(1);
-    //     // Tabla tail = tablaDesdeLista.tail(2);
-    //     // System.out.println(head);
-    //     // System.out.println(tail);
+        //TAIL y head
+        Tabla head = tablaDesdeLista.head(1);
+        Tabla tail = tablaDesdeLista.tail(2);
+        System.out.println(head);
+        System.out.println(tail);
 
         //concatenar
         List<Object[]> otrasfilas = new ArrayList<>();
@@ -84,18 +84,18 @@ public class Prueba_sec_lineal {
         tablaConcatenada.info();
         tablaDesdeLista.info();
 
-    //      List<String> columnas = List.of("Columna 1", "Columna 2");
-    //     List<Predicate<Object>> predicados = List.of(
-    //         valor -> (Integer) valor  < 30,   
-    //         //valor -> (Double) valor >20
+         List<String> columnas = Arrays.asList("Columna1", "Columna2");
+        List<Predicate<Object>> predicados = Arrays.asList(
+            valor -> (Integer) valor  < 30,   
+            //valor -> (Double) valor >20
 
-    //         //valor -> (Boolean) valor.equals(true)
-    //         valor -> valor.equals("Hola".trim())
-    //     );
+            //valor -> (Boolean) valor.equals(true)
+            valor -> valor.equals("Hola".trim())
+        );
         
 
-    //     Tabla tablaFiltrada = tablaDesdeLista.filtrar(columnas, predicados, OperadorLogico.OR);
-    //     tablaFiltrada.info();
+        Tabla tablaFiltrada = tablaDesdeLista.filtrar(columnas, predicados, OperadorLogico.AND);
+        tablaFiltrada.info();
 
 
     
