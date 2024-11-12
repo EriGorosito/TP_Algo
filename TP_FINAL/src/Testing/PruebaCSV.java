@@ -13,75 +13,67 @@ public class PruebaCSV {
         Tabla tabla = new Tabla(rutaArchivo, true, ",");
         Tabla tabla2 = new Tabla(rutaArchivo, true, ",");
         
-        //tabla.info();
+        tabla.info();
 
-        // Tabla tablita = tabla.eliminarFilaPorEtiqueta("1");
-        // System.out.println(tabla);
-        // System.out.println(tablita);
+        tabla.eliminarFilaPorEtiqueta("1");
+        System.out.println(tabla);
 
-        // Tabla copia = tabla.copiaIndependiente();
-        // System.out.println(copia);
+        Tabla copia = tabla.copiaProfunda();
+        System.out.println(copia);
 
-        // //descargar a csv
-        // String descarga_rutaArchivo = "tabla_salida.csv";
-        // tabla.descargarACSV(descarga_rutaArchivo);
+        //descargar a csv
+        String descarga_rutaArchivo = "tabla_salida.csv";
+        tabla.descargarACSV(descarga_rutaArchivo, true, ",");
 
-        
-         
-        // tabla.imprimirTabla();
+        //Acceso a la fila 10
+        List<Object> fila = tabla.indexFila("10"); // Accede a la fila con etiqueta "1"
+        System.out.println("Fila 10: " + fila);
 
-        // List<Object> fila = tabla.indexFila("1"); // Accede a la fila con etiqueta "1"
-        // System.out.println("Fila 1: " + fila);
+        //Acceso a una columna completa
+        List<Object> columna = tabla.indexColumna("age"); // Accede a la columna "Nombre"
+        System.out.println("Columna 'age': " + columna);
 
-        // // // Acceso a una columna completa
-        // List<Object> columna = tabla.indexColumna("age"); // Accede a la columna "Nombre"
-        // System.out.println("Columna 'age': " + columna);
+        //Acceso a una celda específica
+        Object celda = tabla.indexCelda("10", "sex"); // Accede a la celda en fila "1" y columna "Nombre"
+        System.out.println("Celda en (10, Nombre): " + celda);
 
-        // // // Acceso a una celda específica
-        // Object celda = tabla.indexCelda("1", "sex"); // Accede a la celda en fila "1" y columna "Nombre"
-        // System.out.println("Celda en (1, Nombre): " + celda);
 
-        // Ordenamiento
-
-        // List<String> l = new ArrayList<>();
-        // l.add("age");
-        // l.add("bmi");
-        // tabla.ordenarFilas(l, false).imprimirTabla();
+        //Ordenamiento
+        List<String> l = new ArrayList<>();
+        l.add("age");
+        l.add("bmi");
+        System.out.println(tabla.ordenarFilas(l, false));
         
 
-        // // Muestreo
-        // tabla.muestreo(5).imprimirTabla();
-        // System.out.println(tabla);
+        // Muestreo
+        System.out.println(tabla.muestreo(5));
+    
+        //Seleccion
+        Tabla tabla_seleccion = tabla.seleccionar(Arrays.asList("7", "2", "50"), Arrays.asList("age", "bmi"));
+        System.out.println(tabla_seleccion);
 
-        // // String filtro = "children > 1 and bmi < 20";
-        // // Tabla tablaFiltrada = tabla.filtrar(filtro);
-        // // tablaFiltrada.imprimirTabla();
+        //Tail y Head
+        Tabla head = tabla.head(4);
+        Tabla tail = tabla.tail(4);
+        System.out.println(tail);
+        System.out.println(head);
 
-        // Tabla tabla_seleccion = tabla.seleccionar(Arrays.asList("1", "2", "50"), Arrays.asList("age", "bmi"));
-        // tabla_seleccion.imprimirTabla();
+        Tabla tablaConcatenada = Tabla.concatenarTablas(tabla, tabla2);
+        tablaConcatenada.info();
+        tabla.info();
 
-        // //ESTA MAL HECHO TAIL
-        // Tabla head = tabla.head(4);
-        // Tabla tail = tabla.tail(4);
-        // System.out.println(tail);
-        // System.out.println(head);
+        List<String> columnas = Arrays.asList("age", "region");
+        List<Predicate<Object>> predicados = Arrays.asList(
+            valor -> (Double) valor > 30,   
+            //valor -> (Double) valor >20
 
-        // Tabla tablaConcatenada = Tabla.concatenarTablas(tabla, tabla2);
-        // tablaConcatenada.info();
-        // tabla.info();
-
-        // List<String> columnas = List.of("age", "region");
-        // List<Predicate<Object>> predicados = List.of(
-        //     valor -> (Double) valor > 30,   
-        //     //valor -> (Double) valor >20
-
-        //     //valor -> (Boolean) valor.equals(true)
-        //     valor -> valor.equals("northwest".trim())
-        // );
+            //valor -> (Boolean) valor.equals(true)
+            valor -> valor.equals("northwest".trim())
+        );
         
 
-        // Tabla tablaFiltrada = tabla.filtrar(columnas, predicados, OperadorLogico.OR);
-        // tablaFiltrada.info();
+        Tabla tablaFiltrada = tabla.filtrar(columnas, predicados, OperadorLogico.OR);
+        tablaFiltrada.info();
         
         
 
