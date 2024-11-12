@@ -18,7 +18,7 @@ public class Prueba_sec_lineal {
         filas.add(new Object[]{30, "Java", true});
 
         // Crear una tabla a partir de la lista de filas
-        Tabla tablaDesdeLista = new Tabla(filas);
+        Tabla tablaDesdeLista = new Tabla(filas, false);
 
     //     // Imprimir la tabla
     //     // tablaDesdeLista.imprimirTabla();
@@ -77,7 +77,7 @@ public class Prueba_sec_lineal {
         otrasfilas.add(new Object[]{70, "10", true});
 
         // Crear una tabla a partir de la lista de filas
-        Tabla tabla2 = new Tabla(otrasfilas);
+        Tabla tabla2 = new Tabla(otrasfilas, false);
 
     
         Tabla tablaConcatenada = Tabla.concatenarTablas(tablaDesdeLista, tabla2);

@@ -103,17 +103,17 @@ public class Prueba_copia_prof {
         // tablaConcatenada.info();
         // tablaOriginal.info();
 
-        List<String> columnas = List.of("Columna Numerica", "Columna Cadena");
-        List<Predicate<Object>> predicados = List.of(
-            valor -> (Integer) valor > 30,   
-            //valor -> (Double) valor >20
+        // List<String> columnas = List.of("Columna Numerica", "Columna Cadena");
+        // List<Predicate<Object>> predicados = List.of(
+        //     valor -> (Integer) valor > 30,   
+        //     //valor -> (Double) valor >20
 
-            //valor -> (Boolean) valor.equals(true)
-            valor -> valor.equals("Hola".trim())
-        );
-        // String operadorLogico = "AND";
+        //     //valor -> (Boolean) valor.equals(true)
+        //     valor -> valor.equals("Hola".trim())
+        // );
+        // // String operadorLogico = "AND";
 
-        Tabla tablaFiltrada = tablaCopia.filtrar(columnas, predicados, OperadorLogico.AND);
-        tablaFiltrada.info();
+        // Tabla tablaFiltrada = tablaCopia.filtrar(columnas, predicados, OperadorLogico.AND);
+        // tablaFiltrada.info();
     }
 }

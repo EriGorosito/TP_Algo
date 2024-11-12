@@ -15,7 +15,7 @@ public class Prueba_matriz {
             {30, "Java", true}
         };
 
-        Tabla tablaDesdeMatriz = new Tabla(datos);
+        Tabla tablaDesdeMatriz = new Tabla(datos, false);
         tablaDesdeMatriz.imprimirTabla();
     
          
@@ -80,18 +80,18 @@ public class Prueba_matriz {
         // tablaConcatenada.info();
         // tablaDesdeMatriz.info();
 
-                 List<String> columnas = List.of("Columna1", "Columna2");
-        List<Predicate<Object>> predicados = List.of(
-            valor -> (Integer) valor  < 30,   
-            //valor -> (Double) valor >20
+        //          List<String> columnas = List.of("Columna1", "Columna2");
+        // List<Predicate<Object>> predicados = List.of(
+        //     valor -> (Integer) valor  < 30,   
+        //     //valor -> (Double) valor >20
 
-            //valor -> (Boolean) valor.equals(true)
-            valor -> valor.equals("Hola".trim())
-        );
+        //     //valor -> (Boolean) valor.equals(true)
+        //     valor -> valor.equals("Hola".trim())
+        // );
         
 
-        Tabla tablaFiltrada = tablaDesdeMatriz.filtrar(columnas, predicados, OperadorLogico.OR);
-        tablaFiltrada.info();
+        // Tabla tablaFiltrada = tablaDesdeMatriz.filtrar(columnas, predicados, OperadorLogico.OR);
+        // tablaFiltrada.info();
     }
     
 }
