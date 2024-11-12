@@ -34,6 +34,10 @@ public abstract class Columna<T> {
         columna.add(null);
     }
 
+    public void cambiarEncabezado(String nuevoEncabezado){
+        this.encabezado = nuevoEncabezado;
+    }
+
     public abstract boolean validarDato(T celda);
 
     public abstract void modificarDato(int indice, Object nuevoValor);
