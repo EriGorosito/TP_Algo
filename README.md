@@ -381,7 +381,7 @@ System.out.println(tabla.tail(2));
 Permitir la selección parcial de la estructura tabular a través de un filtro aplicado a valores de las celdas (query). Este filtro se puede componer de uno o más comparadores sobre cierta columna (<, >, =) que se combinan con operadores lógicos (and, or), filtrando así
 aquellas filas donde las celdas cumplen aquella condición.
 
-**filtrar(List<String> columnasFiltrar, List<Predicate<Object>> predicados, OperadorLogico operadoresLogicos)**
+**`filtrar(List<String> columnasFiltrar, List<Predicate<Object>> predicados, OperadorLogico operadoresLogicos)`**
 
 El operador lógico se debe poner en mayuculas y pueden ser unicamente OperadorLogico.AND o OperadorLogico.OR
 ```java
@@ -410,14 +410,28 @@ Esto se puede realizar creando una instancia a partir de otra como se mostro ant
 
 **copiaProfunda()**
 ```java
- Object[][] datos = {
-        {10, "Hola", true},
-        {20, "Mundo", false},
-        {30, "Java", true}
-};
-
-Tabla tabla = new Tabla(datos);
-Tabla copiaTabla = tabla.copiaProfunda();
+    Object[][] datos = {
+            {10, "Hola", true},
+            {20, "Mundo", false},
+            {30, "Java", true}
+    };
+    
+    Tabla tabla = new Tabla(datos, false);
+    Tabla copiaTabla = tabla.copiaProfunda();
+    copiaTabla.cambiarEtiquetas(new ArrayList<>(Arrays.asList("D", "E", "F")));
+    copiaTabla.eliminarColumna("Columna1");
+    System.out.println(copiaTabla);
+    System.out.println(tabla);
+    // Columna2       Columna3       
+    // D    Hola           true           
+    // E    Mundo          false          
+    // F    Java           true           
+    
+    //      Columna1       Columna2       Columna3       
+    // 0    10             Hola           true           
+    // 1    20             Mundo          false          
+    // 2    30             Java           true   
+    
 
 ```
 
@@ -470,10 +484,46 @@ System.out.println(tabla.ordenarFilas(l, false));
 // 1    20             Mundo          false
 // 2    10             Hola           true
 ```
-Imputación
+## Imputación
 
-Incorporar la posibilidad de modificar (rellenar) las celdas con valores faltantes (celdas con NA) con cierto valor literal indicado.
+Se puede  modificar (rellenar) las celdas con valores faltantes (celdas con NA) con cierto valor literal indicado.
 
+Para esto se pueden tomar dos caminos. 
+Por un lado se puede utilizar el método **imputarNA(valor)** que cambia las columnas del tipo de valor ingresado o por otro lado **imputarNA(Map<String, Object>)** donde la clave es el encabezado de la columna y el valor es con el que modificarán los NA.
+
+```java
+//Ejemplo de uso 
+    Object[][] datos = {
+        {10, "Hola", null},
+        {null, "Mundo", false},
+        {30, null, true}
+    };
+    Tabla tabla = new Tabla(datos, false);
+    tabla.imputarNA(5);
+    tabla.imputarNA("modificacion");
+    tabla.imputarNA(false);
+    System.out.println(tabla);
+```
+```java
+        //Ejemplo de uso con encabezados
+        Object[][] datos = {
+            {10, "Hola", null},
+            {null, "Mundo", false},
+            {30, null, true}
+        };
+        Tabla tabla = new Tabla(datos, false);
+        Map<String, Object> valores = new HashMap<>();
+        valores.put("Columna1", 5);
+        valores.put("Columna2", "cambiar");
+        valores.put("Columna3", (Boolean) true);
+        tabla.imputarNA(valores);
+        System.out.println(tabla);
+        //      Columna1       Columna2       Columna3       
+        // 0    10             Hola           true           
+        // 1    5              Mundo          false          
+        // 2    30             cambiar        true 
+        
+```
 ## Muestreo
 Tabla ofrece una selección aleatoria de filas según un porcentaje del total de la estructura.
 

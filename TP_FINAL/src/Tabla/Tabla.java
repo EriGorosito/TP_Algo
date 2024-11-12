@@ -3,13 +3,10 @@ package Tabla;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Predicate;
 
 //import javax.xml.bind.TypeConstraintException;
@@ -456,7 +453,7 @@ public class Tabla {
         for (List<Object> fila : filas) {
             tablaOrdenada.agregarFila(fila.toArray());
         }
-
+        tablaOrdenada.inicializarEtiquetas();
         return tablaOrdenada;
     }
 
@@ -537,83 +534,6 @@ public class Tabla {
         return tablaSeleccionada;
     }
 
-    // public Tabla filtrar(String filtro) {
-    //     Tabla tablaFiltrada = new Tabla();
-    //     tablaFiltrada.setColumnas(this.tabla);
-
-    //     for (int i = 0; i < getNumeroFilas(); i++) {
-    //         if (evaluarFiltro(filtro, i)) {
-    //             tablaFiltrada.agregarFila(obtenerFila(i).toArray());
-    //         }
-    //     }
-
-    //     return tablaFiltrada;
-    // }
-
-    // private boolean evaluarFiltro(String filtro, int filaIndex) {
-    //     String[] condiciones = filtro.split("and|or|not");
-    //     List<String> operadores = obtenerOperadores(filtro);
-
-    //     boolean resultado = evaluarCondicion(condiciones[0].trim(), filaIndex);
-    //     for (int i = 1; i < condiciones.length; i++) {
-    //         boolean condicionEvaluada = evaluarCondicion(condiciones[i], filaIndex);
-    //         String operador = operadores.get(i - 1);
-
-    //         if (operador.equals("and")) {
-    //             resultado = resultado && condicionEvaluada;
-    //         } else if (operador.equals("or")) {
-    //             resultado = resultado || condicionEvaluada;
-    //         } else if (operador.equals("not")) {
-    //             resultado = !resultado;
-    //         }
-    //     }
-    //     return resultado;
-    // }
-
-    // private boolean evaluarCondicion(String filtro, int filaIndex) {
-    //     String[] partes = filtro.split(" ");
-    //     String columna = partes[0];
-    //     String operador = partes[1];
-    //     String condicion = partes[2];
-
-    //     Object valorCelda = obtenerValorColumna(filaIndex, columna);
-
-    //     switch (operador) {
-    //         case "=":
-    //             return valorCelda.toString().equals(condicion);
-    //         case "<":
-    //             return Double.parseDouble(valorCelda.toString()) < Double.parseDouble(condicion);
-    //         case ">":
-    //             return Double.parseDouble(valorCelda.toString()) > Double.parseDouble(condicion);
-    //         default:
-    //             return false;
-    //     }
-    // }
-
-    // private Object obtenerValorColumna(int filaIndex, String columna) {
-    //     for (Columna<?> col : tabla) {
-    //         System.out.println(col.getEncabezado());
-    //         System.out.println(columna);
-
-    //         if (col.getEncabezado().equals(columna)) {
-    //             return col.getCelda(filaIndex);
-    //         }
-    //     }
-    //     throw new ColumnaNoEncontrada("Columna no encontrada: " + columna);
-    // }
-
-    // private List<String> obtenerOperadores(String filtro) {
-    //     List<String> operadores = new ArrayList<>();
-    //     String[] partes = filtro.split(" ");
-
-    //     for (String parte : partes) {
-    //         if (parte.equals("and") || parte.equals("or") || parte.equals("not")) {
-    //             operadores.add(parte);
-    //         }
-    //     }
-    //     return operadores;
-    // }
-
     public void setColumnas(List<Columna<?>> columnas) {
         this.tabla = new ArrayList<>(columnas);
     }
@@ -622,6 +542,7 @@ public class Tabla {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
+
         // Agregar los encabezados de las columnas
         sb.append(String.format("%-5s", "")); // Espacio vacío para el índice
         for (Columna<?> columna : tabla) {
@@ -629,19 +550,23 @@ public class Tabla {
         }
         sb.append("\n");
 
+
         // Obtener el número máximo de filas en cualquier columna
         int maxFilas = tabla.stream().mapToInt(Columna::largo).max().orElse(0);
 
+
+        List<String> claves = new ArrayList<>(etiquetasFilas.keySet());
         // Mostrar solo las primeras 5 y las últimas 5 filas si hay más de 10 filas
         if (maxFilas > 10) {
             for (int i = 0; i < 5; i++) {
-                sb.append(String.format("%-5d", i)); // Imprimir el índice de fila
+                sb.append(String.format("%-5s", claves.get(i))); // Imprimir el índice de fila
                 for (Columna<?> columna : tabla) {
                     Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
                     sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
                 }
                 sb.append("\n");
             }
+
 
             // Imprimir "..." debajo de los encabezados
             sb.append(String.format("%-5s", " ")); // Espacio vacío para el índice
@@ -650,8 +575,9 @@ public class Tabla {
             }
             sb.append("\n");
 
+
             for (int i = maxFilas - 5; i < maxFilas; i++) {
-                sb.append(String.format("%-5d", i)); // Imprimir el índice de fila
+                sb.append(String.format("%-5s",claves.get(i))); // Imprimir el índice de fila
                 for (Columna<?> columna : tabla) {
                     Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
                     sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
@@ -661,7 +587,7 @@ public class Tabla {
         } else {
             // Agregar todas las filas si hay 10 o menos
             for (int i = 0; i < maxFilas; i++) {
-                sb.append(String.format("%-5d", i)); // Imprimir el índice de fila
+                sb.append(String.format("%-5s", claves.get(i))); // Imprimir el índice de fila
                 for (Columna<?> columna : tabla) {
                     Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
                     sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
@@ -669,8 +595,11 @@ public class Tabla {
                 sb.append("\n");
             }
         }
+
+
         return sb.toString();
     }
+
 
     public void imprimirTabla() {
         // ESTE METODO ES PARA QUE IMPRIMA LOS DATOS DE LA COLUMNA UNA ABAJO DE LA OTRA
@@ -704,6 +633,7 @@ public class Tabla {
         // Generador de números aleatorios
         Random random = new Random();
         List<Integer> indicesSeleccionados = new ArrayList<>();
+        List<String> etiquetas = new ArrayList<>();
 
         // Generar índices aleatorios sin repetición
         while (indicesSeleccionados.size() < cantidad) {
@@ -715,8 +645,11 @@ public class Tabla {
         // Agregar las filas seleccionadas a la nueva tabla
         for (int indice : indicesSeleccionados) {
             List<?> fila = obtenerFila(indice);
+            etiquetas.add(this.getEtiquetaFila(indice));
             muestra.agregarFila(fila.toArray());
+
         }
+        muestra.cambiarEtiquetas(etiquetas);
         return muestra;
     }
 
@@ -987,12 +920,10 @@ public class Tabla {
 
     public void cambiarEtiquetas(List<String> nuevasEtiquetas){
         if (this.getCantFilas() != nuevasEtiquetas.size()) {
-            System.out.println(this.getCantFilas());
-            System.out.println(nuevasEtiquetas.size());
             throw new IllegalArgumentException("El tamaño de la lista de nuevas claves debe coincidir con el tamaño del mapa.");
         }
         //LinkedHashMap<String, Integer> nuevoMapa = new LinkedHashMap<>();
-
+        etiquetasFilas.clear();
         for (int i = 0; i < getCantFilas(); i++) {
             String clave = nuevasEtiquetas.get(i);
             this.etiquetasFilas.put(clave, i);
