@@ -1,7 +1,9 @@
 package Testing;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import Tabla.OperadorLogico;
@@ -9,14 +11,14 @@ import Tabla.Tabla;
 
 public class Prueba_matriz {
     public static void  main(String[] args){
-        Object[][] datos = {
-            {10, "Hola", true},
-            {20, "Mundo", false},
-            {30, "Java", true}
-        };
+        // Object[][] datos = {
+        //     {10, "Hola", true},
+        //     {20, "Mundo", false},
+        //     {30, "Java", true}
+        // };
 
-        Tabla tablaDesdeMatriz = new Tabla(datos, false);
-        tablaDesdeMatriz.imprimirTabla();
+        // Tabla tablaDesdeMatriz = new Tabla(datos, false);
+        // tablaDesdeMatriz.imprimirTabla();
     
          
         //  //Acceso indexado
@@ -92,6 +94,28 @@ public class Prueba_matriz {
 
         // Tabla tablaFiltrada = tablaDesdeMatriz.filtrar(columnas, predicados, OperadorLogico.OR);
         // tablaFiltrada.info();
+
+        //Ejemplo de uso con encabezados
+        Object[][] datos = {
+            {10, "Hola", null},
+            {null, "Mundo", false},
+            {30, null, true}
+        };
+        Tabla tabla = new Tabla(datos, false);
+        Map<String, Object> valores = new HashMap<>();
+        valores.put("Columna1", 5);
+        valores.put("Columna2", "cambiar");
+        valores.put("Columna3", (Boolean) true);
+        tabla.imputarNA(valores);
+        System.out.println(tabla);
+        //      Columna1       Columna2       Columna3       
+        // 0    10             Hola           true           
+        // 1    5              Mundo          false          
+        // 2    30             cambiar        true 
+        
+
+
+
     }
     
 }
