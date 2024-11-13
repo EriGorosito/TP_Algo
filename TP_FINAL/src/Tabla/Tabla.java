@@ -467,6 +467,7 @@ public class Tabla {
                     if (comparacion != 0) {
                         return ascendente ? comparacion : -comparacion;
                     }
+        
                 }
                 return 0; // Son iguales en todos los criterios
             }

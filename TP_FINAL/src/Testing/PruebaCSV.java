@@ -37,7 +37,10 @@ public class PruebaCSV {
         //Acceso a una celda específica
         Object celda = tabla.indexCelda("10", "sex"); // Accede a la celda en fila "1" y columna "Nombre"
         System.out.println("Celda en (10, Nombre): " + celda);
-
+        // Agregar columna a partir de otra 
+        List columnita = tabla.indexColumna("age");
+        tabla.agregarColumna("hola", columnita);
+        System.out.println(tabla);
 
         //Ordenamiento
         List<String> l = new ArrayList<>();
