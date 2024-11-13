@@ -3,25 +3,27 @@ package Tabla.Columna;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ColumnaBooleana extends Columna<Boolean>{
+import Tabla.Excepciones.TipoDatoException;
+
+public class ColumnaBooleana extends Columna<Boolean> {
     public ColumnaBooleana(String encabezado) {
         super(encabezado);
     }
 
-       // Constructor de copia profunda
-       public ColumnaBooleana(ColumnaBooleana otraColumna) {
+    // Constructor de copia profunda
+    public ColumnaBooleana(ColumnaBooleana otraColumna) {
         super(otraColumna.getEncabezado());
         for (Boolean valor : otraColumna.getColumna()) {
             this.columna.add(valor); // Copia cada valor
         }
     }
-    
+
     @Override
     public void agregarDato(Boolean celda) {
         if (validarDato(celda)) {
             columna.add(celda);
         } else {
-            throw new IllegalArgumentException("El dato no es un booleano válido.");
+            throw new TipoDatoException("El dato no es un booleano válido.");
         }
     }
 
@@ -49,8 +51,8 @@ public class ColumnaBooleana extends Columna<Boolean>{
 
     @Override
     public void modificarDato(int indice, Object nuevoValor) {
-        
-        this.columna.set(indice,(Boolean) nuevoValor);
+
+        this.columna.set(indice, (Boolean) nuevoValor);
     }
 
     @Override
@@ -63,9 +65,8 @@ public class ColumnaBooleana extends Columna<Boolean>{
             return false;
         }
 
-        Columna otro2 = (ColumnaBooleana) otro; 
-        return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
+        Columna otro2 = (ColumnaBooleana) otro;
+        return Objects.equals(this.getEncabezado(), otro2.getEncabezado());
     }
 
-    
 }

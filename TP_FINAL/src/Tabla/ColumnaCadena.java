@@ -3,34 +3,35 @@ package Tabla;
 import java.util.ArrayList;
 import java.util.Objects;
 import Tabla.Columna.Columna;
+import Tabla.Excepciones.TipoDatoException;
 
-public class ColumnaCadena extends Columna<String>{
+public class ColumnaCadena extends Columna<String> {
 
     public ColumnaCadena(String encabezado) {
         super(encabezado);
     }
 
-      // Constructor de copia profunda
-      public ColumnaCadena(ColumnaCadena otraColumna) {
+    // Constructor de copia profunda
+    public ColumnaCadena(ColumnaCadena otraColumna) {
         super(otraColumna.getEncabezado());
         for (String valor : otraColumna.getColumna()) {
             this.columna.add(valor); // Copia cada valor
         }
     }
-    
+
     @Override
     public void agregarDato(String celda) {
-    
+
         if (validarDato(celda)) {
             columna.add(celda);
         } else {
-            throw new IllegalArgumentException("El dato no es una cadena válida.");
+            throw new TipoDatoException("El dato no es una cadena válida.");
         }
     }
 
     @Override
     public boolean validarDato(String celda) {
-        return celda != null && !celda.trim().isEmpty(); 
+        return celda != null && !celda.trim().isEmpty();
     }
 
     @Override
@@ -55,7 +56,7 @@ public class ColumnaCadena extends Columna<String>{
         this.columna.set(indice, nuevoValor.toString());
     }
 
-        @Override
+    @Override
     public boolean equals(Object otro) {
         if (this == otro) {
             return true;
@@ -65,7 +66,7 @@ public class ColumnaCadena extends Columna<String>{
             return false;
         }
 
-        Columna otro2 = (ColumnaCadena) otro; 
-        return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
+        Columna otro2 = (ColumnaCadena) otro;
+        return Objects.equals(this.getEncabezado(), otro2.getEncabezado());
     }
 }

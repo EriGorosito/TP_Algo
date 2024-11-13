@@ -5,25 +5,24 @@ import java.time.Instant;
 
 import Tabla.Excepciones.CronometroException;
 
-
 public class Cronometro {
     private Instant tiempoInicio;
     private Instant tiempoFin;
 
-    public Cronometro(){
-            tiempoInicio = Instant.now();
-            tiempoFin = null;  // Resetea el tiempo de fin en caso de reutilización
+    public Cronometro() {
+        tiempoInicio = Instant.now();
+        tiempoFin = null;
     }
 
     // Inicia el cronómetro
     public void iniciar() {
         tiempoInicio = Instant.now();
-        tiempoFin = null;  // Resetea el tiempo de fin en caso de reutilización
+        tiempoFin = null; // Resetea el tiempo de fin en caso de reutilización
     }
 
     public void reiniciar() {
         tiempoInicio = Instant.now();
-        tiempoFin = null;  // Resetea el tiempo de fin en caso de reutilización
+        tiempoFin = null;
     }
 
     public double parcial() {
@@ -34,6 +33,7 @@ public class Cronometro {
         Duration duracion = Duration.between(tiempoInicio, tiempoFin);
         return duracion.toMillis() / 1000.0;
     }
+
     public double detener() {
         if (tiempoInicio == null) {
             throw new CronometroException("El cronómetro no se ha iniciado.");
