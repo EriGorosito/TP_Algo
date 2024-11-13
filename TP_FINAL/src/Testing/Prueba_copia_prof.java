@@ -45,7 +45,7 @@ public class Prueba_copia_prof {
         colNumerica.agregarDato(30);
         colCadena.agregarDato("Prueba");
         colBooleana.agregarDato(true);
-
+        tablaCopia.eliminarFilaPorEtiqueta("0");
         // Imprimir ambas tablas para verificar la independencia
         System.out.println("\nTabla Original después de modificaciones:" + tablaOriginal);
 

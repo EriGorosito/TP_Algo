@@ -47,13 +47,11 @@ public class Tabla {
 
     // CONSTRUCTOR para generar una estructura tabular a través de copia profunda
     public Tabla(Tabla otraTabla) {
-        otraTabla.inicializarEtiquetas();
         this.tieneEncabezado = otraTabla.tieneEncabezado;
-        this.etiquetasFilas = otraTabla.etiquetasFilas;
-        //this.etiquetasFilas = new LinkedHashMap(otraTabla.etiquetasFilas);
+        this.etiquetasFilas = new LinkedHashMap(otraTabla.etiquetasFilas);
         this.tabla = new ArrayList<>();
-        //this.etiquetasFilas = new LinkedHashMap<>();
-        
+    
+    
         for (Columna<?> columna : otraTabla.tabla) {
             Columna<?> nuevaColumna = columna.clone(); 
             this.agregarColumna(nuevaColumna);         
@@ -355,11 +353,12 @@ public class Tabla {
     }
 
     public Map<String, Integer> getEtiquetasFilas(){
-        
+        inicializarEtiquetas();
         return new LinkedHashMap<>(etiquetasFilas);
     }
 
     public String getEtiquetaFila(int indice) {
+        inicializarEtiquetas();
         for (Map.Entry<String, Integer> entry : etiquetasFilas.entrySet()) {
             if (entry.getValue() == indice) {
                 return entry.getKey();
@@ -581,6 +580,7 @@ public class Tabla {
     
 
     public void eliminarFilaPorEtiqueta(String etiquetaFila) {
+        inicializarEtiquetas();
         Integer indiceFila = etiquetasFilas.get(etiquetaFila);
         if (indiceFila == null) {
             throw new EtiquetaFilaException("La etiqueta de fila no existe: " + etiquetaFila);
@@ -760,8 +760,7 @@ public class Tabla {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-
-
+        inicializarEtiquetas();
         // Agregar los encabezados de las columnas
         sb.append(String.format("%-5s", "")); // Espacio vacío para el índice
         for (Columna<?> columna : tabla) {
