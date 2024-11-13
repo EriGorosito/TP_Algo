@@ -1,7 +1,9 @@
-package Tabla;
+package Tabla.Funciones;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Tabla.Tabla;
 import Tabla.Columna.Columna;
 import Tabla.Excepciones.EncabezadoNoEncontradoException;
 import Tabla.Excepciones.FilasRangoException;
@@ -14,7 +16,7 @@ public class Seleccionar {
         if (encabezadosCol == null || encabezadosCol.isEmpty()) {
             for (int i = 0; i < tabla.getCantColumna(); i++) {
                 indicesColumnas.add(i);
-                nuevaTabla.agregarColumna(tabla.getColumna(i).copia());
+                nuevaTabla.agregarColumna(tabla.getColumna(i).copiaEstructura());
             }
         } else {
 
@@ -22,7 +24,7 @@ public class Seleccionar {
                 int indice = tabla.getEncabezados().indexOf(encabezado.trim());
                 if (indice != -1) {
                     indicesColumnas.add(indice);
-                    nuevaTabla.agregarColumna(tabla.getColumna(indice).copia()); // Agregar la columna seleccionada
+                    nuevaTabla.agregarColumna(tabla.getColumna(indice).copiaEstructura()); // Agregar la columna seleccionada
                 } else {
                     throw new EncabezadoNoEncontradoException("Encabezado no encontrado: " + encabezado);
                 }
@@ -62,7 +64,7 @@ public class Seleccionar {
         }
 
         for(int i = 0; i < tabla.getCantColumna(); i++){
-            nuevaTabla.agregarColumna(tabla.getColumna(i).copia());
+            nuevaTabla.agregarColumna(tabla.getColumna(i).copiaEstructura());
         }
 
         for (int i = 0; i < cantidad; i++) {
@@ -86,7 +88,7 @@ public class Seleccionar {
                 throw new FilasRangoException("Cantidad de filas fuera de rango");
             }
             for(int i = 0; i < tabla.getCantColumna(); i++){
-                nuevaTabla.agregarColumna(tabla.getColumna(i).copia());
+                nuevaTabla.agregarColumna(tabla.getColumna(i).copiaEstructura());
             }
             for (int i = tabla.getCantFilas() - cantidad; i < tabla.getCantFilas(); i++) {
                 List<Object> fila = new ArrayList<>();

@@ -2,9 +2,7 @@ package Tabla;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
 import Tabla.Columna.Columna;
-import Tabla.Columna.ColumnaBooleana;
 
 public class ColumnaCadena extends Columna<String>{
 
@@ -48,7 +46,7 @@ public class ColumnaCadena extends Columna<String>{
     }
 
     @Override
-    public Columna<String> copia() {
+    public Columna<String> copiaEstructura() {
         return new ColumnaCadena(this.getEncabezado());
     }
 
@@ -59,15 +57,15 @@ public class ColumnaCadena extends Columna<String>{
 
         @Override
     public boolean equals(Object otro) {
-    if (this == otro) {
-        return true;
-    }
+        if (this == otro) {
+            return true;
+        }
 
-    if (otro == null || this.getClass() != otro.getClass()) {
-        return false;
-    }
+        if (otro == null || this.getClass() != otro.getClass()) {
+            return false;
+        }
 
-    Columna otro2 = (ColumnaCadena) otro; 
-    return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
+        Columna otro2 = (ColumnaCadena) otro; 
+        return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
     }
 }

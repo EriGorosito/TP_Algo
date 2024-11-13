@@ -43,7 +43,7 @@ public class ColumnaBooleana extends Columna<Boolean>{
     }
 
     @Override
-    public Columna<Boolean> copia() {
+    public Columna<Boolean> copiaEstructura() {
         return new ColumnaBooleana(this.getEncabezado());
     }
 
@@ -55,16 +55,16 @@ public class ColumnaBooleana extends Columna<Boolean>{
 
     @Override
     public boolean equals(Object otro) {
-    if (this == otro) {
-        return true;
-    }
+        if (this == otro) {
+            return true;
+        }
 
-    if (otro == null || this.getClass() != otro.getClass()) {
-        return false;
-    }
+        if (otro == null || this.getClass() != otro.getClass()) {
+            return false;
+        }
 
-    Columna otro2 = (ColumnaBooleana) otro; 
-    return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
+        Columna otro2 = (ColumnaBooleana) otro; 
+        return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
     }
 
     

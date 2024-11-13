@@ -8,17 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
-
 //import javax.xml.bind.TypeConstraintException;
-
 import Tabla.Columna.Columna;
 import Tabla.Columna.ColumnaBooleana;
 import Tabla.Columna.ColumnaNumerica;
 import Tabla.Excepciones.*;
+import Tabla.Funciones.ArchivoCSV;
+import Tabla.Funciones.Filtrado;
+import Tabla.Funciones.Seleccionar;
+import Tabla.OperadorLogico.OperadorLogico;
 
 public class Tabla {
     private List<Columna<?>> tabla;
-    //private String delimitador = ",";
     private boolean tieneEncabezado = true;
     private LinkedHashMap<String, Integer> etiquetasFilas;
 
@@ -28,7 +29,6 @@ public class Tabla {
     }
 
     public Tabla(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
-        //this.delimitador = delimitador;
         this.tieneEncabezado = tieneEncabezado;
         this.etiquetasFilas = new LinkedHashMap<>();
         this.tabla = new ArrayList<>();
@@ -47,27 +47,28 @@ public class Tabla {
 
     // CONSTRUCTOR para generar una estructura tabular a través de copia profunda
     public Tabla(Tabla otraTabla) {
-        //this.delimitador = otraTabla.delimitador;
+        otraTabla.inicializarEtiquetas();
         this.tieneEncabezado = otraTabla.tieneEncabezado;
         this.etiquetasFilas = otraTabla.etiquetasFilas;
         //this.etiquetasFilas = new LinkedHashMap(otraTabla.etiquetasFilas);
         this.tabla = new ArrayList<>();
-        this.etiquetasFilas = new LinkedHashMap<>();
-
+        //this.etiquetasFilas = new LinkedHashMap<>();
         
         for (Columna<?> columna : otraTabla.tabla) {
             Columna<?> nuevaColumna = columna.clone(); 
             this.agregarColumna(nuevaColumna);         
         }
         inicializarEtiquetas();
-
     }
+
     // CONSTRUCTOR que toma una matriz bidimensional para crear la tabla.
     public <T> Tabla(T[][] datos, boolean tieneEncabezado) {
         this.tabla = new ArrayList<>();
         this.etiquetasFilas = new LinkedHashMap<>();
+
         int numColumnas = datos[0].length;
         crearColumnas(datos, numColumnas, tieneEncabezado);
+
         boolean primeraLinea = true;
         for (T[] fila : datos) {
             if(primeraLinea && tieneEncabezado){
@@ -98,6 +99,7 @@ public class Tabla {
         }
         inicializarEtiquetas();
     }
+
     private <T> void crearColumnas(T[][] datos, int numColumnas, boolean tieneEncabezado) {
         for (int col = 0; col < numColumnas; col++) {
             Class<?> tipoColumna = detectarTipoColumna(datos, col, tieneEncabezado);
@@ -113,7 +115,6 @@ public class Tabla {
             }
         }
     }
-
 
     // Método para detectar el tipo de columna
     private <T> Class<?> detectarTipoColumna(T[][] datos, int col, boolean tieneEncabezado) {
@@ -134,12 +135,14 @@ public class Tabla {
             }
         }
 
-
-        if (esNumerico) return Number.class;
-        if (esBooleano) return Boolean.class;
+        if (esNumerico){
+            return Number.class;
+        }
+        if (esBooleano){
+            return Boolean.class;
+        }
         return String.class;
     }
-
 
     private void inicializarEtiquetas() {
         if(etiquetasFilas.size() != getCantFilas()){
@@ -152,24 +155,32 @@ public class Tabla {
         
     }
 
-    public Columna<?> getColumna(int posicion) {
-        return tabla.get(posicion);
+    public void cambiarEtiquetas(List<String> nuevasEtiquetas){
+        if (this.getCantFilas() != nuevasEtiquetas.size()) {
+            throw new IllegalArgumentException("El tamaño de la lista de nuevas claves debe coincidir con el tamaño del mapa.");
+        }
+        //LinkedHashMap<String, Integer> nuevoMapa = new LinkedHashMap<>();
+        etiquetasFilas.clear();
+        for (int i = 0; i < getCantFilas(); i++) {
+            String clave = nuevasEtiquetas.get(i);
+            this.etiquetasFilas.put(clave, i);
+        }
+
     }
 
-    public Columna<?> getColumna(String encabezado) {
-        for(Columna<?> columna : this.tabla){
-            if(encabezado.equals(columna.getEncabezado())){
-                return columna;
-            }
+    public void cambiarEncabezados(List<String> nuevosEncabezados){
+        if( nuevosEncabezados.size() != getCantColumna()){
+            throw new EncabezadosException ("Se esperaba una lista de largo "+ getCantColumna()+ " y se paso una de largo "+ nuevosEncabezados.size());
         }
-        throw new ColumnaNoEncontrada ("No se encontro una columna con ese encabezado");
+        for(int i = 0 ; i < getCantColumna(); i++){
+            this.getColumna(i).cambiarEncabezado(nuevosEncabezados.get(i));
+        }
     }
 
     public void agregarColumna(Columna<?> columna) {
         tabla.add(columna);
      
     }
-    
 
     public void agregarColumna(List<Object> secuencia) {
         int numero = getCantColumna() + 1;
@@ -249,7 +260,7 @@ public class Tabla {
                 ((ColumnaBooleana) nuevaColumna).agregarDato((Boolean) elemento);  // Permite valores nulos
             }
         }
-        // Si no son numéricos ni booleanos, se asume que son cadenas (o nulos)
+        // Si no son numéricos ni booleanos, se asume que son cadenas
         else {
             nuevaColumna = new ColumnaCadena(encabezado);
             for (Object elemento : secuencia) {
@@ -262,7 +273,6 @@ public class Tabla {
         }
         this.agregarColumna(nuevaColumna);
     }
-
    
 
     public void agregarFila(Object... valores) {
@@ -285,9 +295,8 @@ public class Tabla {
             }
         }
     }
- 
 
-    private List<Object> obtenerFila(int indice) {
+    public List<Object> obtenerFila(int indice) {
         List<Object> fila = new ArrayList<>();
         for (Columna<?> columna : tabla) {
             fila.add(columna.getCelda(indice));
@@ -295,8 +304,17 @@ public class Tabla {
         return fila;
     }
 
-    public void descargarACSV(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
-        ArchivoCSV.descargarACSV(this, rutaArchivo, tieneEncabezado, delimitador);
+    public Columna<?> getColumna(int posicion) {
+        return tabla.get(posicion);
+    }
+
+    public Columna<?> getColumna(String encabezado) {
+        for(Columna<?> columna : this.tabla){
+            if(encabezado.equals(columna.getEncabezado())){
+                return columna;
+            }
+        }
+        throw new ColumnaNoEncontrada ("No se encontro una columna con ese encabezado");
     }
 
     public int getCantFilas() {
@@ -336,16 +354,6 @@ public class Tabla {
         return tipodeDatos;
     }
 
-    public void cambiarEncabezados(List<String> nuevosEncabezados){
-        if( nuevosEncabezados.size() != getCantColumna()){
-            throw new EncabezadosException ("Se esperaba una lista de largo "+ getCantColumna()+ " y se paso una de largo "+ nuevosEncabezados.size());
-        }
-        for(int i = 0 ; i < getCantColumna(); i++){
-            this.getColumna(i).cambiarEncabezado(nuevosEncabezados.get(i));
-        }
-    }
-
-
     public Map<String, Integer> getEtiquetasFilas(){
         
         return new LinkedHashMap<>(etiquetasFilas);
@@ -368,9 +376,11 @@ public class Tabla {
         for (Map.Entry<String, String> entry : tipoDeDatos.entrySet()) {
             System.out.println("Columna: " + entry.getKey() + " - Tipo de Dato: " + entry.getValue());
         }
-        //System.out.println(etiquetasFilas.keySet());
     }
 
+    public void descargarACSV(String rutaArchivo, boolean tieneEncabezado, String delimitador) {
+        ArchivoCSV.descargarACSV(this, rutaArchivo, tieneEncabezado, delimitador);
+    }
     public List<Object> indexFila(String etiquetaFila) {
         inicializarEtiquetas();
         List<Object> fila = new ArrayList<>();
@@ -409,20 +419,26 @@ public class Tabla {
 
     public Tabla ordenarFilas(List<String> etiquetasColumnas, boolean ascendente) {
         List<List<Object>> filas = new ArrayList<>();
+        List<List<Object>> filasConEtiquetas = new ArrayList<>();
 
-        // Recopilar los datos en una lista de filas
+        // Recopilar las etiquetas y datos de filas en una lista
         for (int i = 0; i < getCantFilas(); i++) {
+            List<Object> filaConEtiqueta = new ArrayList<>();
+            filaConEtiqueta.add(getEtiquetaFila(i)); 
             List<Object> fila = new ArrayList<>();
             for (Columna<?> columna : tabla) {
                 fila.add(columna.getCelda(i));
             }
-            filas.add(fila);
+            filaConEtiqueta.add(fila); // Agregar la fila como lista
+            filasConEtiquetas.add(filaConEtiqueta);
         }
 
         // Crear un comparador para las filas
-        Collections.sort(filas, new Comparator<List<Object>>() {
+        Collections.sort(filasConEtiquetas, new Comparator<List<Object>>() {
             @Override
-            public int compare(List<Object> fila1, List<Object> fila2) {
+            public int compare(List<Object> filaConEtiqueta1, List<Object> filaConEtiqueta2) {
+                List<Object> fila1 = (List<Object>) filaConEtiqueta1.get(1);
+                List<Object> fila2 = (List<Object>) filaConEtiqueta2.get(1);
                 for (String etiquetaColumna : etiquetasColumnas) {
                     int indiceColumna = getEncabezados().indexOf(etiquetaColumna);
                     if (indiceColumna == -1) {
@@ -445,8 +461,8 @@ public class Tabla {
                     if (valor2 == null) {
                         return ascendente ? 1 : -1; // El valor2 es null, se coloca después si es ascendente
                     }
-                    Comparable comparable1 = (Comparable) fila1.get(indiceColumna);
-                    Comparable comparable2 = (Comparable) fila2.get(indiceColumna);
+                    Comparable comparable1 = (Comparable) valor1;
+                    Comparable comparable2 = (Comparable) valor2;
 
                     int comparacion = comparable1.compareTo(comparable2);
                     if (comparacion != 0) {
@@ -457,62 +473,19 @@ public class Tabla {
             }
         });
 
-        // Crear una nueva instancia de Tabla
-        Tabla tablaOrdenada = new Tabla();
 
-        // Agregar las columnas a la nueva tabla
-        for (Columna<?> columna : tabla) {
-            tablaOrdenada.agregarColumna(columna.copia());
+        Tabla tablaOrdenada = this.copiaVacia();
+        List<String> etiquetasOrdenadas = new ArrayList<>();
+        for (List<Object> filaConEtiqueta : filasConEtiquetas) {
+            etiquetasOrdenadas.add((String) filaConEtiqueta.get(0)); // Añadir etiqueta original
+            tablaOrdenada.agregarFila(((List<Object>) filaConEtiqueta.get(1)).toArray());
         }
-
-        // Agregar las filas ordenadas a la nueva tabla
-        for (List<Object> fila : filas) {
-            tablaOrdenada.agregarFila(fila.toArray());
-        }
-        tablaOrdenada.inicializarEtiquetas();
+    
+        tablaOrdenada.cambiarEtiquetas(etiquetasOrdenadas);
         return tablaOrdenada;
     }
 
-    public static Tabla concatenarTablas(Tabla tabla1, Tabla tabla2) {
-        // Validación: Comparar cantidad de columnas
-        if (tabla1.tabla.size() != tabla2.tabla.size()) {
-            throw new DiferenteCantidadColumnasException("Las tablas no tienen la misma cantidad de columnas.");
-        }
 
-        // Validación: Verificar que las columnas coincidan en tipo, orden y etiquetas
-        for (int i = 0; i < tabla1.tabla.size(); i++) {
-            Columna<?> columna1 = tabla1.tabla.get(i);
-            Columna<?> columna2 = tabla2.tabla.get(i);
-
-            // Verificar tipo de datos, nombre y orden
-            if (!columna1.getClass().equals(columna2.getClass()) ||
-                    !columna1.getEncabezado().equals(columna2.getEncabezado())) {
-                throw new a("Las columnas no coinciden en tipo de datos, orden o etiquetas.");
-            }
-        }
-
-        // Crear una nueva tabla para almacenar la concatenación de ambas
-        Tabla tablaConcatenada = new Tabla();
-
-        // Copiar columnas de tabla1 a la tabla concatenada (solo una vez, ya que ambas
-        // tablas tienen las mismas columnas)
-        for (Columna<?> columna : tabla1.tabla) {
-            tablaConcatenada.tabla.add(columna.copia()); // Copia profunda de la columna
-        }
-
-        // Agregar filas de tabla1
-        for (int i = 0; i < tabla1.getCantFilas(); i++) {
-            tablaConcatenada.agregarFila(tabla1.obtenerFila(i).toArray());
-        }
-
-        
-        // Agregar filas de tabla2
-        for (int i = 0; i < tabla2.getCantFilas(); i++) {
-            tablaConcatenada.agregarFila(tabla2.obtenerFila(i).toArray());
-        }
-
-        return tablaConcatenada;
-    }
     public Tabla concatenarTablas(Tabla tabla1) {
         // Validación: Comparar cantidad de columnas
         if (tabla1.getCantColumna() != this.getCantColumna()) {
@@ -550,85 +523,17 @@ public class Tabla {
         return tablaSeleccionada;
     }
 
-    public void setColumnas(List<Columna<?>> columnas) {
-        this.tabla = new ArrayList<>(columnas);
+    public Tabla filtrar(List<String> columnasFiltrar, List<Predicate<Object>> predicados, OperadorLogico operadoresLogicos){
+        return Filtrado.filtrar(this, columnasFiltrar, predicados, operadoresLogicos);
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-
-        // Agregar los encabezados de las columnas
-        sb.append(String.format("%-5s", "")); // Espacio vacío para el índice
-        for (Columna<?> columna : tabla) {
-            sb.append(String.format("%-15s", columna.getEncabezado()));
-        }
-        sb.append("\n");
-
-
-        // Obtener el número máximo de filas en cualquier columna
-        int maxFilas = tabla.stream().mapToInt(Columna::largo).max().orElse(0);
-
-
-        List<String> claves = new ArrayList<>(etiquetasFilas.keySet());
-        // Mostrar solo las primeras 5 y las últimas 5 filas si hay más de 10 filas
-        if (maxFilas > 10) {
-            for (int i = 0; i < 5; i++) {
-                sb.append(String.format("%-5s", claves.get(i))); // Imprimir el índice de fila
-                for (Columna<?> columna : tabla) {
-                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
-                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
-                }
-                sb.append("\n");
-            }
-
-
-            // Imprimir "..." debajo de los encabezados
-            sb.append(String.format("%-5s", " ")); // Espacio vacío para el índice
-            for (Columna<?> columna : tabla) {
-                sb.append(String.format("%-15s", "...")); // Puntos debajo de cada columna
-            }
-            sb.append("\n");
-
-
-            for (int i = maxFilas - 5; i < maxFilas; i++) {
-                sb.append(String.format("%-5s",claves.get(i))); // Imprimir el índice de fila
-                for (Columna<?> columna : tabla) {
-                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
-                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
-                }
-                sb.append("\n");
-            }
-        } else {
-            // Agregar todas las filas si hay 10 o menos
-            for (int i = 0; i < maxFilas; i++) {
-                sb.append(String.format("%-5s", claves.get(i))); // Imprimir el índice de fila
-                for (Columna<?> columna : tabla) {
-                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
-                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
-                }
-                sb.append("\n");
-            }
-        }
-
-
-        return sb.toString();
-    }
-
 
 
     public Tabla muestreo(int cantidad) {
         if (cantidad <= 0 || cantidad > getCantFilas()) {
             throw new MuestrasRangoException("La cantidad de muestras debe estar entre 1 y " + getCantFilas());
         }
-        Tabla muestra = new Tabla(); // Nueva tabla para almacenar la muestra
-
-        // Clonamos las columnas de la tabla original
-        for (Columna<?> columna : tabla) {
-            muestra.agregarColumna(columna.copia());
-        }
-
+    
+        Tabla muestra = this.copiaVacia();
         // Generador de números aleatorios
         Random random = new Random();
         List<Integer> indicesSeleccionados = new ArrayList<>();
@@ -654,7 +559,6 @@ public class Tabla {
 
     public Tabla copiaProfunda() {
         Tabla nuevaTabla = new Tabla();
-        //nuevaTabla.delimitador = this.delimitador;
         nuevaTabla.tieneEncabezado = this.tieneEncabezado;
         nuevaTabla.etiquetasFilas = new LinkedHashMap<>(this.etiquetasFilas);
 
@@ -664,6 +568,17 @@ public class Tabla {
         }
         return nuevaTabla;
     }
+
+    public Tabla copiaVacia(){
+        Tabla nuevaTabla = new Tabla();
+        nuevaTabla.tieneEncabezado = this.tieneEncabezado;
+        nuevaTabla.etiquetasFilas = new LinkedHashMap<>();
+        for (Columna columna : tabla) {
+            nuevaTabla.agregarColumna(columna.copiaEstructura());
+        }
+        return nuevaTabla;
+    }
+    
 
     public void eliminarFilaPorEtiqueta(String etiquetaFila) {
         Integer indiceFila = etiquetasFilas.get(etiquetaFila);
@@ -677,11 +592,6 @@ public class Tabla {
 
         actualizarEtiquetas(etiquetaFila, indiceFila);
 
-        // Actualizar las etiquetas de fila en la nueva tabla
-        // this.etiquetasFilas.clear();
-        // for (int i = 0; i < this.getCantFilas(); i++) {
-        //     this.etiquetasFilas.put(String.valueOf(i), i);
-        // }
     }
 
     private void actualizarEtiquetas(String etiquetaFila, Integer indice){
@@ -847,97 +757,65 @@ public class Tabla {
     }
 
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
 
-    public Tabla filtrar(List<String> columnasFiltrar, List<Predicate<Object>> predicados, OperadorLogico operadoresLogicos) {
-        List<String> etiquetasFiltradas = new ArrayList<>();
-        Tabla tablaFiltrada = copiaVacia();
-        
-        // Iterar por cada fila de la tabla actual
-        for (int i = 0; i < this.getCantFilas(); i++) {
-            boolean resultado = (operadoresLogicos == OperadorLogico.AND);
-            boolean filaCumple = false; // variable que indica si la fila cumple con las condiciones
-            
-            // Evaluar cada predicado en la fila
-            for (int j = 0; j < columnasFiltrar.size(); j++) {
-                String nombreColumna = columnasFiltrar.get(j);
-                Predicate<Object> predicado = predicados.get(j);
-                String etiquetaFila = getEtiquetaFila(i);
-                
-                if (etiquetaFila == null) {
-                    throw new IllegalArgumentException("No se encontró la etiqueta para la fila con índice: " + i);
+
+        // Agregar los encabezados de las columnas
+        sb.append(String.format("%-5s", "")); // Espacio vacío para el índice
+        for (Columna<?> columna : tabla) {
+            sb.append(String.format("%-15s", columna.getEncabezado()));
+        }
+        sb.append("\n");
+
+
+        // Obtener el número máximo de filas en cualquier columna
+        int maxFilas = tabla.stream().mapToInt(Columna::largo).max().orElse(0);
+
+
+        List<String> claves = new ArrayList<>(etiquetasFilas.keySet());
+        // Mostrar solo las primeras 5 y las últimas 5 filas si hay más de 10 filas
+        if (maxFilas > 10) {
+            for (int i = 0; i < 5; i++) {
+                sb.append(String.format("%-5s", claves.get(i))); // Imprimir el índice de fila
+                for (Columna<?> columna : tabla) {
+                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
+                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
                 }
-                
-                Object valor = indexCelda(etiquetaFila, nombreColumna);
-                
-                if (valor == null) {
-                    continue; // Si no hay valor, saltamos a la siguiente columna
-                }
-                
-                boolean cumpleCondicion;
-                if (valor instanceof Integer) {
-                    cumpleCondicion = predicado.test((Integer) valor);
-                } else if (valor instanceof Double) {
-                    cumpleCondicion = predicado.test((Double) valor);
-                } else {
-                    cumpleCondicion = predicado.test(valor);
-                }
-                
-                // Si el operador es AND, debemos asegurarnos que todas las condiciones se cumplan
-                if (operadoresLogicos == OperadorLogico.AND) {
-                    if (!cumpleCondicion) {
-                        resultado = false; // Si alguna condición no cumple, la fila no pasa
-                        break; // No es necesario seguir evaluando
-                    }
-                }
-                // Si el operador es OR, basta que una condición sea verdadera para que la fila pase
-                else if (operadoresLogicos == OperadorLogico.OR) {
-                    if (cumpleCondicion) {
-                        filaCumple = true; // Al menos una columna cumple, la fila es válida
-                        break; // No es necesario seguir evaluando
-                    }
-                }
+                sb.append("\n");
             }
 
-            // Si la fila cumple con todas las condiciones (según AND u OR), agregarla a las filas filtradas
-            if ((operadoresLogicos == OperadorLogico.AND && resultado) || (operadoresLogicos == OperadorLogico.OR && filaCumple)) {
-                tablaFiltrada.agregarFila(obtenerFila(i).toArray());
-                etiquetasFiltradas.add(getEtiquetaFila(i));
 
+            // Imprimir "..." debajo de los encabezados
+            sb.append(String.format("%-5s", " ")); // Espacio vacío para el índice
+            for (Columna<?> columna : tabla) {
+                sb.append(String.format("%-15s", "...")); // Puntos debajo de cada columna
             }
+            sb.append("\n");
+
+
+            for (int i = maxFilas - 5; i < maxFilas; i++) {
+                sb.append(String.format("%-5s",claves.get(i))); // Imprimir el índice de fila
+                for (Columna<?> columna : tabla) {
+                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
+                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
+                }
+                sb.append("\n");
             }
-
-            // Verificar si se encontraron etiquetas filatradas
-            if (etiquetasFiltradas.isEmpty()) {
-                throw new FilaVaciaException("No se encontraron filas que cumplan con los criterios de filtrado.");
+        } else {
+            // Agregar todas las filas si hay 10 o menos
+            for (int i = 0; i < maxFilas; i++) {
+                sb.append(String.format("%-5s", claves.get(i))); // Imprimir el índice de fila
+                for (Columna<?> columna : tabla) {
+                    Object celda = (i < columna.largo()) ? columna.getCelda(i) : "NA";
+                    sb.append(String.format("%-15s", celda == null ? "NA" : celda.toString()));
+                }
+                sb.append("\n");
+            }
         }
 
-    // Crear una nueva tabla usando el constructor existente con `List<Object[]>`
-        tablaFiltrada.cambiarEtiquetas(etiquetasFiltradas);
-        return tablaFiltrada;
+
+        return sb.toString();
     }
-
-    public void cambiarEtiquetas(List<String> nuevasEtiquetas){
-        if (this.getCantFilas() != nuevasEtiquetas.size()) {
-            throw new IllegalArgumentException("El tamaño de la lista de nuevas claves debe coincidir con el tamaño del mapa.");
-        }
-        //LinkedHashMap<String, Integer> nuevoMapa = new LinkedHashMap<>();
-        etiquetasFilas.clear();
-        for (int i = 0; i < getCantFilas(); i++) {
-            String clave = nuevasEtiquetas.get(i);
-            this.etiquetasFilas.put(clave, i);
-        }
-
-    }
-
-    private Tabla copiaVacia(){
-        Tabla nuevaTabla = new Tabla();
-        //nuevaTabla.delimitador = this.delimitador;
-        nuevaTabla.tieneEncabezado = this.tieneEncabezado;
-        nuevaTabla.etiquetasFilas = new LinkedHashMap<>();
-        for (Columna columna : tabla) {
-            nuevaTabla.agregarColumna(columna.copia());
-        }
-        return nuevaTabla;
-    }
-
 }

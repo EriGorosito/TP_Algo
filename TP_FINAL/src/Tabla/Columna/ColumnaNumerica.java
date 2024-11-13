@@ -46,7 +46,7 @@ public class ColumnaNumerica extends Columna<Number>{
     }
 
     @Override
-    public Columna<Number> copia() {
+    public Columna<Number> copiaEstructura() {
         return new ColumnaNumerica(this.getEncabezado());
     }
 
