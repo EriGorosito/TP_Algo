@@ -218,49 +218,6 @@ grandes. Por ejemplo, mostrar un máximo de columnas o filas, y mostrar un máxi
 ## Modificación
 
 Una instancia de tipo Tabla puede modificarse de las siguientes forma:
-
-a) Accediendo directo a una celda y asignando un nuevo valor
-**modificarCelda(String encabezado, String etiquetaFila,  T nuevoValor)**
-
-b) Insertando una columna nueva a partir de otra columna (con misma cantidad de elementos que filas)
-
-
-c) Insertando una columna nueva a partir de una secuencia lineal nativa de Java (con misma cantidad de elementos que filas)
-
-**`agregarColumna(List<Object> nuevaColumna)`**  
-**`agregarColumna( String encabezado, List<Object> nuevaColumna)`** 
-
-d) Eliminando una columna
-
-**eliminarColumna(int indice)**
-**eliminarColumna(String encabezado)**
-
-e) Eliminando una fila
-**eliminarFila(String etiqueta)**
-```java
-//Ejemplo de uso
-Object[][] datos = {
-    {10, "Hola", true},
-    {20, "Mundo", false},
-    {30, "Java", true}
-};
-
-Tabla tabla = new Tabla(datos, false);
-
-tabla.modificarCelda("Columna2","1", "cambio");
-tabla.agregarColumna(new ArrayList<>(Arrays.asList("Agregar", "Nueva", "Columna")));
-List<Object> nuevaColumna = new ArrayList<>(Arrays.asList(6, 4, 5));
-tabla.agregarColumna("Encabezado", nuevaColumna);
-tabla.eliminarColumna("Columna3");
-tabla.eliminarFilaPorEtiqueta("0");
-System.out.println(tabla);
-// Columna1       Columna2       Columna4       Encabezado     
-// 1    20             cambio         Nueva          4
-// 2    30             Java           Columna        5
-
-```
-
-Una instancia de tipo Tabla puede modificarse de las siguientes forma:
 ### Modificar celda
 Accediendo directo a una celda y asignando un nuevo valor
 **modificarCelda(String etiquetaFila, String encabezado, T nuevoValor)**
