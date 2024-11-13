@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import Tabla.OperadorLogico;
+
 import Tabla.Tabla;
+import Tabla.OperadorLogico.OperadorLogico;
 
 public class Prueba_matriz {
     public static void  main(String[] args){
@@ -18,34 +19,34 @@ public class Prueba_matriz {
 
         Tabla tablaDesdeMatriz = new Tabla(datos, false);
 
-        //Acceso indexado
-        List<Object> fila = tablaDesdeMatriz.indexFila("1");  // Accede a la fila con etiqueta "1"
-        System.out.println("Fila 1: " + fila);
+        // //Acceso indexado
+        // List<Object> fila = tablaDesdeMatriz.indexFila("1");  // Accede a la fila con etiqueta "1"
+        // System.out.println("Fila 1: " + fila);
 
-        // Acceso a una columna completa
-        List<Object> columna = tablaDesdeMatriz.indexColumna("Columna1");  // Accede a la columna "Nombre"
-        System.out.println("Columna 'Columna 1': " + columna);
+        // // Acceso a una columna completa
+        // List<Object> columna = tablaDesdeMatriz.indexColumna("Columna1");  // Accede a la columna "Nombre"
+        // System.out.println("Columna 'Columna 1': " + columna);
 
-        // Acceso a una celda específica
-        Object celda = tablaDesdeMatriz.indexCelda("1", "Columna1");  // Accede a la celda en fila "1" y columna "Nombre"
-        System.out.println("Celda en (1, Columna1): " + celda);
+        // // Acceso a una celda específica
+        // Object celda = tablaDesdeMatriz.indexCelda("1", "Columna1");  // Accede a la celda en fila "1" y columna "Nombre"
+        // System.out.println("Celda en (1, Columna1): " + celda);
 
-        //eliminar fila
-        tablaDesdeMatriz.eliminarFilaPorEtiqueta("1");
-        System.out.println(tablaDesdeMatriz);
+        // //eliminar fila
+        // tablaDesdeMatriz.eliminarFilaPorEtiqueta("1");
+        // System.out.println(tablaDesdeMatriz);
 
-        Tabla copia = tablaDesdeMatriz.copiaProfunda();
-        System.out.println(copia);
+        // Tabla copia = tablaDesdeMatriz.copiaProfunda();
+        // System.out.println(copia);
 
-        //descargar a csv
-        String descarga_rutaArchivo = "tabla_salida4.csv";
-        tablaDesdeMatriz.descargarACSV(descarga_rutaArchivo, true, ",");
+        // //descargar a csv
+        // String descarga_rutaArchivo = "tabla_salida4.csv";
+        // tablaDesdeMatriz.descargarACSV(descarga_rutaArchivo, true, ",");
         
 
         // Ordenamiento NO ANDA 
         List<String> l = new ArrayList<>();
         l.add("Columna1");
-        System.out.println(tablaDesdeMatriz.ordenarFilas(l, false));
+        System.out.println(tablaDesdeMatriz.ordenarFilas(l, true));
          
 
         // Muestreo
@@ -73,7 +74,7 @@ public class Prueba_matriz {
         };
 
         Tabla tabla2 = new Tabla(otrosdatos, false);
-        Tabla tablaConcatenada = Tabla.concatenarTablas(tablaDesdeMatriz, tabla2);
+        Tabla tablaConcatenada = tablaDesdeMatriz.concatenarTablas(tabla2);
         tablaConcatenada.info();
         tablaDesdeMatriz.info();
 

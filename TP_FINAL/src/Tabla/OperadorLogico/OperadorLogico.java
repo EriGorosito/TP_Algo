@@ -1,4 +1,4 @@
-package Tabla;
+package Tabla.OperadorLogico;
 
 public enum OperadorLogico {
     AND,

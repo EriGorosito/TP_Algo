@@ -1,6 +1,7 @@
 package Testing;
-import Tabla.OperadorLogico;
 import Tabla.Tabla;
+import Tabla.OperadorLogico.OperadorLogico;
+
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class PruebaCSV {
         System.out.println(tail);
         System.out.println(head);
 
-        Tabla tablaConcatenada = Tabla.concatenarTablas(tabla, tabla2);
+        Tabla tablaConcatenada = tabla.concatenarTablas(tabla2);
         tablaConcatenada.info();
         tabla.info();
 

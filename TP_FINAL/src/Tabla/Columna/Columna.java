@@ -41,9 +41,16 @@ public abstract class Columna<T> {
     public abstract boolean validarDato(T celda);
 
     public abstract void modificarDato(int indice, Object nuevoValor);
-
     
     public abstract boolean equals(Object otro);
+
+    public abstract String getTipoDato();
+
+    // Copia profunda
+    public abstract Columna<T> clone();
+
+    // Copia estructura
+    public abstract Columna<T> copiaEstructura();
 
     @Override
     public String toString() {
@@ -58,11 +65,5 @@ public abstract class Columna<T> {
         return salida;
     }
 
-    public abstract String getTipoDato();
 
-    // Copia profunda
-    public abstract Columna<T> clone();
-
-    // Copia estructura
-    public abstract Columna<T> copia();
 }

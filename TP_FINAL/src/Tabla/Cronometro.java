@@ -15,7 +15,6 @@ public class Cronometro {
             tiempoFin = null;  // Resetea el tiempo de fin en caso de reutilización
     }
 
-
     // Inicia el cronómetro
     public void iniciar() {
         tiempoInicio = Instant.now();
