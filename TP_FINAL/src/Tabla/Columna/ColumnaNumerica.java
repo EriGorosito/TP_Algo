@@ -3,11 +3,13 @@ package Tabla.Columna;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ColumnaNumerica extends Columna<Number>{
+import Tabla.Excepciones.TipoDatoException;
+
+public class ColumnaNumerica extends Columna<Number> {
 
     public ColumnaNumerica(String encabezado) {
         super(encabezado);
-        
+
     }
 
     // Constructor de copia profunda
@@ -17,13 +19,13 @@ public class ColumnaNumerica extends Columna<Number>{
             this.columna.add(valor); // Copia cada valor
         }
     }
-    
+
     @Override
     public void agregarDato(Number celda) {
         if (validarDato(celda)) {
             columna.add(celda);
         } else {
-            throw new IllegalArgumentException("El dato no es un número válido.");
+            throw new TipoDatoException("El dato no es un número válido.");
         }
     }
 
@@ -57,15 +59,15 @@ public class ColumnaNumerica extends Columna<Number>{
 
     @Override
     public boolean equals(Object otro) {
-    if (this == otro) {
-        return true;
-    }
+        if (this == otro) {
+            return true;
+        }
 
-    if (otro == null || this.getClass() != otro.getClass()) {
-        return false;
-    }
+        if (otro == null || this.getClass() != otro.getClass()) {
+            return false;
+        }
 
-    Columna otro2 = (ColumnaNumerica) otro; 
-    return  Objects.equals(this.getEncabezado(), otro2.getEncabezado());
+        Columna otro2 = (ColumnaNumerica) otro;
+        return Objects.equals(this.getEncabezado(), otro2.getEncabezado());
     }
 }

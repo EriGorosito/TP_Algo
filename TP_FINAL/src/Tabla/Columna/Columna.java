@@ -34,14 +34,14 @@ public abstract class Columna<T> {
         columna.add(null);
     }
 
-    public void cambiarEncabezado(String nuevoEncabezado){
+    public void cambiarEncabezado(String nuevoEncabezado) {
         this.encabezado = nuevoEncabezado;
     }
 
     public abstract boolean validarDato(T celda);
 
     public abstract void modificarDato(int indice, Object nuevoValor);
-    
+
     public abstract boolean equals(Object otro);
 
     public abstract String getTipoDato();
@@ -64,6 +64,5 @@ public abstract class Columna<T> {
         }
         return salida;
     }
-
 
 }

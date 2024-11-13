@@ -1,4 +1,5 @@
 package Tabla.Funciones;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -13,13 +14,13 @@ import Tabla.Tabla;
 import Tabla.Columna.Columna;
 import Tabla.Columna.ColumnaBooleana;
 import Tabla.Columna.ColumnaNumerica;
+import Tabla.Excepciones.TamanioFilaException;
 
-
-public class ArchivoCSV{
+public class ArchivoCSV {
     public static void cargarCSV(Tabla tabla, String rutaArchivo, String delimitador, boolean tieneEncabezado) {
         List<String> encabezados = new ArrayList<>();
         List<String[]> filas = new ArrayList<>();
-        
+
         try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
             boolean primeraFila = true;
@@ -48,7 +49,7 @@ public class ArchivoCSV{
 
                 for (String[] fila : filas) {
                     String valor = fila[i].trim();
-                    
+
                     // Saltar valores nulos o vacíos
                     if (valor.equals("NA") || valor.isEmpty()) {
                         continue;
@@ -111,13 +112,13 @@ public class ArchivoCSV{
     }
 
     private static boolean esBooleano(String valor) {
-        return valor.equalsIgnoreCase("true") || valor.equalsIgnoreCase("false")||
-        valor.equalsIgnoreCase("yes")|| valor.equalsIgnoreCase("no");
+        return valor.equalsIgnoreCase("true") || valor.equalsIgnoreCase("false") ||
+                valor.equalsIgnoreCase("yes") || valor.equalsIgnoreCase("no");
     }
 
-    public static void agregarFila( Tabla tabla, Object... valores) {
+    public static void agregarFila(Tabla tabla, Object... valores) {
         if (valores.length != tabla.getCantColumna()) {
-            throw new IllegalArgumentException("Número de valores no coincide con el número de columnas.");
+            throw new TamanioFilaException("Número de valores no coincide con el número de columnas.");
         }
 
         for (int i = 0; i < valores.length; i++) {
@@ -130,7 +131,8 @@ public class ArchivoCSV{
             }
         }
     }
-    public static void descargarACSV(Tabla tabla, String rutaArchivo,  boolean tieneEncabezado, String delimitador) {
+
+    public static void descargarACSV(Tabla tabla, String rutaArchivo, boolean tieneEncabezado, String delimitador) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
             if (tieneEncabezado) {
                 // Escribir encabezado
